@@ -11,22 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   nav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
 
-  const regions = {
-    'Norte':'Vila Nery, Tijuco Preto, Santa Maria, Jacobucci, Vila São José e Portal do Sol',
-    'Sul':'Vila Prado, Cruzeiro do Sul, Gonzaga, Beatriz, Boa Vista e Pacaembu',
-    'Leste':'São Carlos VIII, Tangará, Douradinho, Santa Maria II, Astolpho e Coqueiros',
-    'Oeste':'Santa Felícia, Parque Faber, Cidade Jardim, Parque Iguatemi e Romeu Tortorelli',
-    'Centro':'Centro, Mercado, Estação, Vila Pureza, Lagoa Serena e entorno central',
-    'Sul / Sudoeste':'Cidade Aracy, Antenor Garcia, Presidente Collor, Zavaglia e Abdelnur'
-  };
-  document.querySelectorAll('[data-region]').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-region]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const region = btn.dataset.region;
-    document.getElementById('regionTitle').textContent = region;
-    document.getElementById('regionText').textContent = regions[region];
-  }));
-
   document.querySelectorAll('[data-kind]').forEach(btn => btn.addEventListener('click', () => {
     document.querySelectorAll('[data-kind]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
