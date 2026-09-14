@@ -64,3 +64,11 @@ PLs e Requerimentos são lidos do perfil oficial de Elton Carvalho:
 `https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe`
 
 A Câmara não apresenta atualmente Ofícios como categoria própria na página de publicações do vereador. Por isso, o contador de Ofícios fica editável no Admin até existir uma fonte oficial individualizada. Caso seja identificada uma URL oficial com uma listagem exclusiva, configure `CAMARA_OFICIOS_URL` na Vercel; a sincronização passa a tentar obter automaticamente a quantidade informada nessa página.
+
+
+## V15 — Instagram integrado às Últimas Atualizações
+- Card do Instagram mantido ao lado das Últimas Atualizações no desktop.
+- Foto circular de perfil do Elton adicionada ao cabeçalho do card.
+- @eltoncarvalho10192 e acesso ao perfil em destaque discreto.
+- Layout responsivo: no mobile, Últimas Atualizações aparecem primeiro e Instagram logo abaixo.
+- Mantido o carrossel de últimos posts e toda a integração da V14 com a Câmara.

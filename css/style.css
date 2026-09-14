@@ -145,3 +145,18 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 .legislative-source svg{width:17px;height:17px;color:var(--yellow);flex:0 0 auto}.legislative-source span{flex:1}.legislative-source small{display:block;margin-top:3px;color:#9DAEDC}.legislative-source a{color:var(--yellow);font-weight:700;white-space:nowrap}
 @media(max-width:1100px){.legislative-numbers-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.legislative-numbers-grid{grid-template-columns:1fr}.legislative-source{align-items:flex-start;flex-wrap:wrap}.legislative-source a{width:100%;padding-left:27px}}
+
+
+/* === V15: Instagram com foto de perfil ao lado das últimas atualizações === */
+.news-grid-editorial{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;align-items:stretch}
+.latest-updates-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;min-width:0}
+.latest-updates-column .news-card{height:100%}
+.instagram-feed-compact{grid-column:auto!important;height:100%;min-height:100%}
+.instagram-profile-head{display:grid;grid-template-columns:68px minmax(0,1fr) 34px;align-items:center;gap:13px;margin-bottom:16px}
+.instagram-profile-photo{width:68px;height:68px;border-radius:50%;object-fit:cover;object-position:center;border:3px solid #fff;box-shadow:0 0 0 2px var(--blue);background:#eef2ff}
+.instagram-profile-copy{min-width:0}.instagram-profile-copy h3{font-size:25px;line-height:1;margin:5px 0 5px;color:var(--ink)}
+.instagram-handle{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;font-weight:700;color:var(--muted)}
+.instagram-open-profile{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#f2f5ff;color:var(--blue)}
+.instagram-open-profile svg{width:15px;height:15px}
+@media(max-width:1000px){.news-grid-editorial{grid-template-columns:1fr}.latest-updates-column{grid-template-columns:repeat(2,minmax(0,1fr))}.instagram-feed-compact{grid-column:auto!important}.instagram-profile-head{grid-template-columns:64px minmax(0,1fr) 34px}.instagram-profile-photo{width:64px;height:64px}}
+@media(max-width:680px){.news-grid-editorial,.latest-updates-column{grid-template-columns:1fr}.instagram-profile-head{grid-template-columns:58px minmax(0,1fr) 34px}.instagram-profile-photo{width:58px;height:58px}.instagram-profile-copy h3{font-size:23px}}
