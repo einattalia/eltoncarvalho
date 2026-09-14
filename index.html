@@ -17,6 +17,7 @@
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
   <script src="js/content.js" defer></script>
   <script src="js/app.js" defer></script>
+  <script src="js/instagram.js" defer></script>
 </head>
 <body>
 <header class="header">
@@ -160,10 +161,33 @@
 <section class="section news-section" id="noticias">
   <div class="container">
     <div class="section-heading"><div><span class="section-kicker" data-content-key="news.kicker">Acompanhe o mandato</span><h2 data-content-key="news.title">ÚLTIMAS ATUALIZAÇÕES.</h2></div><p data-content-key="news.text">Notícias, fiscalizações, projetos e ações do dia a dia.</p></div>
-    <div class="news-grid">
+    <div class="news-grid news-grid-editorial">
       <a class="news-card" href="https://www.saocarlosnotoque.com" target="_blank" rel="noopener"><span>Mandato</span><h3 data-content-key="news.card1.title">Veja notícias e ações do mandato em São Carlos</h3><p data-content-key="news.card1.text">Acompanhe as publicações mais recentes sobre projetos, fiscalizações e resultados.</p><strong>Ler matérias <i data-lucide="arrow-up-right"></i></strong></a>
       <a class="news-card" href="https://www.saocarlosagora.com.br" target="_blank" rel="noopener"><span>Imprensa</span><h3 data-content-key="news.card2.title">Atualizações sobre a atuação de Elton Carvalho</h3><p data-content-key="news.card2.text">Informação local com acompanhamento das ações do Legislativo.</p><strong>Acessar portal <i data-lucide="arrow-up-right"></i></strong></a>
-      <a class="news-card social-card" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener"><span>Instagram</span><h3 data-content-key="news.instagram.title">@eltoncarvalho10192</h3><p data-content-key="news.instagram.text">Bastidores, agenda, fiscalização, saúde e causa animal.</p><strong>Seguir perfil <i data-lucide="instagram"></i></strong></a>
+    </div>
+
+    <div class="instagram-feed" id="instagramFeed" aria-label="Últimos posts do Instagram">
+      <div class="instagram-feed-head">
+        <div>
+          <span class="instagram-label"><i data-lucide="instagram"></i> Instagram</span>
+          <h3 data-content-key="news.instagram.title">@eltoncarvalho10192</h3>
+        </div>
+        <a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">Ver perfil <i data-lucide="arrow-up-right"></i></a>
+      </div>
+      <div class="instagram-carousel-shell">
+        <button class="instagram-nav instagram-prev" type="button" aria-label="Post anterior"><i data-lucide="chevron-left"></i></button>
+        <div class="instagram-viewport">
+          <div class="instagram-track" id="instagramTrack">
+            <a class="instagram-post instagram-fallback" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">
+              <div class="instagram-placeholder"><i data-lucide="instagram"></i></div>
+              <div class="instagram-post-copy"><strong>Últimas atualizações no Instagram</strong><p data-content-key="news.instagram.text">Bastidores, agenda, fiscalização, saúde e causa animal.</p></div>
+            </a>
+          </div>
+        </div>
+        <button class="instagram-nav instagram-next" type="button" aria-label="Próximo post"><i data-lucide="chevron-right"></i></button>
+      </div>
+      <div class="instagram-dots" id="instagramDots" aria-hidden="true"></div>
+      <p class="instagram-status" id="instagramStatus" aria-live="polite"></p>
     </div>
   </div>
 </section>

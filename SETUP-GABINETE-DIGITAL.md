@@ -47,3 +47,16 @@ Os anexos de denúncias ficam em bucket privado. O site público pode criar arqu
 
 ## Admin na Vercel
 Os arquivos do painel usam caminhos absolutos (`/admin/admin.css` e `/admin/admin.js`) para funcionar tanto em `/admin` quanto em `/admin/` com `cleanUrls` da Vercel.
+
+
+## Instagram automático
+
+A seção Últimas atualizações possui integração oficial via Instagram API.
+Cadastre na Vercel:
+
+- `INSTAGRAM_ACCESS_TOKEN`: token da conta profissional do Instagram.
+- `INSTAGRAM_USER_ID`: `me` ou o ID numérico da conta do Instagram.
+- `INSTAGRAM_GRAPH_VERSION`: versão da Graph API (o projeto usa `v24.0` como fallback).
+
+O token é usado somente pela função `/api/instagram` no servidor e nunca é enviado ao navegador.
+O feed busca até 12 mídias e mantém cache de 15 minutos. No frontend, o carrossel avança a cada 3 segundos, pausa no hover/foco e aceita swipe no mobile.
