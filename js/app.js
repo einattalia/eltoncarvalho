@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (categoryField) categoryField.hidden = animalComplaint;
     if (categorySelect) {
       categorySelect.required = !animalComplaint;
-      categorySelect.value = animalComplaint ? 'Causa Animal' : '';
+      categorySelect.value = '';
     }
   }
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
           kind: data.get('kind'),
           name: String(data.get('name') || '').trim(),
           phone: String(data.get('phone') || '').trim(),
-          category: String(data.get('category') || '').trim(),
+          category: String(data.get('kind') === 'Denúncia' ? 'Causa Animal' : (data.get('category') || '')).trim(),
           neighborhood: String(data.get('neighborhood') || '').trim(),
           address: String(data.get('address') || '').trim(),
           ouvidoria_protocol: String(data.get('ouvidoria_protocol') || '').trim(),

@@ -49,7 +49,7 @@
     </a>`;
   };
 
-  const perView = () => window.innerWidth <= 680 ? 1 : window.innerWidth <= 1000 ? 2 : 3;
+  const perView = () => feed.classList.contains('instagram-feed-compact') ? 1 : (window.innerWidth <= 680 ? 1 : window.innerWidth <= 1000 ? 2 : 3);
   const maxIndex = () => Math.max(0, items.length - perView());
 
   function renderDots(){

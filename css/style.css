@@ -99,3 +99,40 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 
 /* V10 — campo opcional da Ouvidoria */
 .optional-field{font-weight:400;opacity:.62;font-size:.86em}
+
+/* === V12: Instagram integrado às últimas atualizações === */
+.news-grid-editorial{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;margin-bottom:0}
+.instagram-feed-compact{display:flex;flex-direction:column;min-height:270px;padding:20px;border:1px solid var(--line);border-radius:22px;background:#fff;color:var(--ink);overflow:hidden;box-shadow:none}
+.instagram-feed-compact:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.instagram-feed-compact .instagram-feed-head{margin-bottom:14px;align-items:flex-start}
+.instagram-feed-compact .instagram-feed-head h3{font-size:26px;line-height:1.03;margin:9px 0 0;color:var(--ink)}
+.instagram-feed-compact .instagram-feed-head>a{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#f2f5ff;color:var(--blue);flex:0 0 auto}
+.instagram-feed-compact .instagram-label{color:var(--blue)}
+.instagram-feed-compact .instagram-carousel-shell{margin-top:2px}
+.instagram-feed-compact .instagram-viewport{border-radius:15px;overflow:hidden}
+.instagram-feed-compact .instagram-track{gap:0}
+.instagram-feed-compact .instagram-post{flex:0 0 100%;display:grid;grid-template-columns:40% 60%;min-height:126px;border:1px solid #e7ebf4;border-radius:15px;box-shadow:none;background:#f8f9fc;overflow:hidden}
+.instagram-feed-compact .instagram-media,.instagram-feed-compact .instagram-placeholder{width:100%;height:100%;min-height:126px;aspect-ratio:auto}
+.instagram-feed-compact .instagram-media img{width:100%;height:100%;object-fit:cover}
+.instagram-feed-compact .instagram-media-badge{top:7px;right:7px;padding:5px 7px;font-size:7px}
+.instagram-feed-compact .instagram-post-copy{padding:12px;min-height:126px;justify-content:center}
+.instagram-feed-compact .instagram-post-copy strong{font-size:11px;line-height:1.35}
+.instagram-feed-compact .instagram-post-copy p{font-size:9px;line-height:1.45;-webkit-line-clamp:2}
+.instagram-feed-compact .instagram-post-meta{font-size:8px}
+.instagram-feed-compact .instagram-placeholder{display:grid;place-items:center;background:linear-gradient(135deg,#eef2ff,#dfe7ff);color:var(--blue)}
+.instagram-feed-compact .instagram-placeholder svg{width:32px;height:32px}
+.instagram-feed-compact .instagram-nav{width:29px;height:29px;background:#fff;box-shadow:0 6px 16px rgba(6,22,83,.18)}
+.instagram-feed-compact .instagram-nav svg{width:14px;height:14px}
+.instagram-feed-compact .instagram-prev{left:6px}.instagram-feed-compact .instagram-next{right:6px}
+.instagram-card-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:13px}
+.instagram-feed-compact .instagram-dots{justify-content:flex-start;margin:0;min-width:28px}
+.instagram-feed-compact .instagram-dot{background:#cbd4ea}.instagram-feed-compact .instagram-dot.active{background:var(--blue)}
+.instagram-profile-link{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;color:var(--blue)}
+.instagram-profile-link svg{width:14px;height:14px}
+.instagram-feed-compact .instagram-status{margin:5px 0 0;text-align:left;color:var(--muted);font-size:8px;min-height:0}
+@media(max-width:1000px){.news-grid-editorial{grid-template-columns:1fr 1fr}.instagram-feed-compact{grid-column:1/-1}.instagram-feed-compact .instagram-post{grid-template-columns:32% 68%}}
+@media(max-width:680px){.news-grid-editorial{grid-template-columns:1fr}.instagram-feed-compact{grid-column:auto;min-height:0}.instagram-feed-compact .instagram-post{grid-template-columns:38% 62%}.instagram-feed-compact .instagram-feed-head h3{font-size:25px}}
+
+/* Demanda: Causa Animal em destaque exclusivo */
+.tabs .animal-demand-tab{border:1px solid rgba(217,45,32,.22);background:rgba(217,45,32,.08);color:#B42318}
+.tabs .animal-demand-tab.active{background:#D92D20;color:#fff;border-color:#D92D20;box-shadow:0 6px 18px rgba(217,45,32,.28)}

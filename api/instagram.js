@@ -1,7 +1,7 @@
-const { json, setCors } = require('./_lib');
+const { json, cors } = require('./_lib');
 
 module.exports = async function handler(req, res) {
-  setCors(req, res);
+  cors(res, 'GET,OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return json(res, 405, { error: 'Método não permitido.' });
 

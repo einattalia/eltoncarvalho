@@ -94,10 +94,10 @@
   <div class="container">
     <div class="section-heading"><div><span class="section-kicker" data-content-key="areas.kicker">Principais ações</span><h2 data-content-key="areas.title">ONDE O MANDATO ATUA.</h2></div><p data-content-key="areas.text">Frentes de trabalho que concentram fiscalização, proposições, recursos e atendimento às demandas da população.</p></div>
     <div class="areas-grid">
-      <article class="area-card"><span class="area-icon"><i data-lucide="stethoscope"></i></span><h3 data-content-key="areas.health.title">Saúde</h3><p data-content-key="areas.health.text">Fiscalização das unidades, melhoria no atendimento e busca de recursos para ampliar a estrutura do SUS.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="paw-print"></i></span><h3 data-content-key="areas.animal.title">Causa Animal</h3><p data-content-key="areas.animal.text">Proteção, combate aos maus-tratos, políticas de adoção, atendimento veterinário e fortalecimento do bem-estar animal.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="building-2"></i></span><h3 data-content-key="areas.infra.title">Infraestrutura</h3><p data-content-key="areas.infra.text">Manutenção urbana, vias, iluminação, descarte irregular, mato alto e melhorias nos bairros.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="heart-handshake"></i></span><h3 data-content-key="areas.social.title">Área Social</h3><p data-content-key="areas.social.text">Apoio a famílias, entidades e iniciativas que ampliam oportunidades e fortalecem a rede de proteção social.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="stethoscope"></i></span><h3 data-content-key="areas.health.title">Saúde</h3><p data-content-key="areas.health.text">Fiscalização das unidades, melhoria no atendimento e busca de recursos para ampliar a estrutura do SUS.</p></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="paw-print"></i></span><h3 data-content-key="areas.animal.title">Causa Animal</h3><p data-content-key="areas.animal.text">Proteção, combate aos maus-tratos, políticas de adoção, atendimento veterinário e fortalecimento do bem-estar animal.</p></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="building-2"></i></span><h3 data-content-key="areas.infra.title">Infraestrutura</h3><p data-content-key="areas.infra.text">Manutenção urbana, vias, iluminação, descarte irregular, mato alto e melhorias nos bairros.</p></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="heart-handshake"></i></span><h3 data-content-key="areas.social.title">Área Social</h3><p data-content-key="areas.social.text">Apoio a famílias, entidades e iniciativas que ampliam oportunidades e fortalecem a rede de proteção social.</p></article>
     </div>
   </div>
 </section>
@@ -144,7 +144,7 @@
         <label>WhatsApp<input name="phone" required inputmode="tel" maxlength="24" placeholder="(16) 99999-9999"></label>
       </div>
       <div class="form-grid two-cols">
-        <label id="categoryField">Categoria<select name="category" id="categorySelect" required><option value="">Selecione</option><option>Saúde</option><option value="Causa Animal" hidden>Causa Animal</option><option>Educação</option><option>Zeladoria</option><option>Infraestrutura</option><option>Área Social</option><option>Outros</option></select></label>
+        <label id="categoryField">Categoria<select name="category" id="categorySelect" required><option value="">Selecione</option><option>Saúde</option><option>Educação</option><option>Zeladoria</option><option>Infraestrutura</option><option>Área Social</option><option>Outros</option></select></label>
         <label>Bairro<input name="neighborhood" required maxlength="100" placeholder="Ex.: Santa Felícia"></label>
       </div>
       <label>Local / endereço da ocorrência<input name="address" maxlength="180" placeholder="Rua, número ou ponto de referência"></label>
@@ -165,30 +165,33 @@
     <div class="news-grid news-grid-editorial">
       <a class="news-card" href="https://www.saocarlosnotoque.com" target="_blank" rel="noopener"><span>Mandato</span><h3 data-content-key="news.card1.title">Veja notícias e ações do mandato em São Carlos</h3><p data-content-key="news.card1.text">Acompanhe as publicações mais recentes sobre projetos, fiscalizações e resultados.</p><strong>Ler matérias <i data-lucide="arrow-up-right"></i></strong></a>
       <a class="news-card" href="https://www.saocarlosagora.com.br" target="_blank" rel="noopener"><span>Imprensa</span><h3 data-content-key="news.card2.title">Atualizações sobre a atuação de Elton Carvalho</h3><p data-content-key="news.card2.text">Informação local com acompanhamento das ações do Legislativo.</p><strong>Acessar portal <i data-lucide="arrow-up-right"></i></strong></a>
-    </div>
 
-    <div class="instagram-feed" id="instagramFeed" aria-label="Últimos posts do Instagram">
-      <div class="instagram-feed-head">
-        <div>
-          <span class="instagram-label"><i data-lucide="instagram"></i> Instagram</span>
-          <h3 data-content-key="news.instagram.title">@eltoncarvalho10192</h3>
-        </div>
-        <a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">Ver perfil <i data-lucide="arrow-up-right"></i></a>
-      </div>
-      <div class="instagram-carousel-shell">
-        <button class="instagram-nav instagram-prev" type="button" aria-label="Post anterior"><i data-lucide="chevron-left"></i></button>
-        <div class="instagram-viewport">
-          <div class="instagram-track" id="instagramTrack">
-            <a class="instagram-post instagram-fallback" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">
-              <div class="instagram-placeholder"><i data-lucide="instagram"></i></div>
-              <div class="instagram-post-copy"><strong>Últimas atualizações no Instagram</strong><p data-content-key="news.instagram.text">Bastidores, agenda, fiscalização, saúde e causa animal.</p></div>
-            </a>
+      <div class="news-card instagram-feed instagram-feed-compact" id="instagramFeed" aria-label="Últimos posts do Instagram">
+        <div class="instagram-feed-head">
+          <div>
+            <span class="instagram-label"><i data-lucide="instagram"></i> Instagram</span>
+            <h3 data-content-key="news.instagram.title">Últimos posts do Elton</h3>
           </div>
+          <a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener" aria-label="Abrir perfil de Elton Carvalho no Instagram"><i data-lucide="arrow-up-right"></i></a>
         </div>
-        <button class="instagram-nav instagram-next" type="button" aria-label="Próximo post"><i data-lucide="chevron-right"></i></button>
+        <div class="instagram-carousel-shell">
+          <button class="instagram-nav instagram-prev" type="button" aria-label="Post anterior"><i data-lucide="chevron-left"></i></button>
+          <div class="instagram-viewport">
+            <div class="instagram-track" id="instagramTrack">
+              <a class="instagram-post instagram-fallback" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">
+                <div class="instagram-placeholder"><i data-lucide="instagram"></i></div>
+                <div class="instagram-post-copy"><strong>Veja os últimos posts</strong><p data-content-key="news.instagram.text">Bastidores, agenda, fiscalização, saúde e causa animal.</p><span class="instagram-post-meta">@eltoncarvalho10192</span></div>
+              </a>
+            </div>
+          </div>
+          <button class="instagram-nav instagram-next" type="button" aria-label="Próximo post"><i data-lucide="chevron-right"></i></button>
+        </div>
+        <div class="instagram-card-footer">
+          <div class="instagram-dots" id="instagramDots" aria-hidden="true"></div>
+          <a class="instagram-profile-link" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">Ver últimos posts <i data-lucide="instagram"></i></a>
+        </div>
+        <p class="instagram-status" id="instagramStatus" aria-live="polite"></p>
       </div>
-      <div class="instagram-dots" id="instagramDots" aria-hidden="true"></div>
-      <p class="instagram-status" id="instagramStatus" aria-live="polite"></p>
     </div>
   </div>
 </section>
