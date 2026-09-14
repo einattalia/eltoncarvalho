@@ -31,3 +31,16 @@ Esta versão inclui painel em `/admin/`, CMS editável, banco de demandas, anexo
 - Gabinete Digital: aba exclusiva vermelha `Denúncia Causa Animal`.
 - `Causa Animal` não aparece mais como categoria nas solicitações.
 - Na denúncia de Causa Animal o campo Categoria fica oculto e o sistema registra automaticamente `Causa Animal`.
+
+## V10 — Protocolo Ouvidoria + Dashboard de Relatórios
+- Novo campo opcional `Protocolo Ouvidoria` para Solicitação e Denúncia Causa Animal.
+- O protocolo pode ser vinculado/alterado também pelo painel administrativo.
+- Botão `Gerar relatório` no painel e nova seção `Relatórios`.
+- Dashboard com filtros por período, tipo e status; indicadores, distribuição por status/categoria/bairro, CSV e impressão/PDF.
+- Antes de publicar, execute uma única vez `supabase/migration-v10-ouvidoria.sql` no SQL Editor do Supabase existente.
+
+
+## V11 — Dashboard avançado
+Antes de publicar esta versão, execute no SQL Editor do Supabase o arquivo `supabase/migration-v11-dashboard.sql`. Ele adiciona `resolved_at`, usado para calcular o tempo médio até a resolução.
+
+O dashboard de relatórios agora inclui: demandas por mês, tempo médio até resolução, taxa de resolução e funil de Causa Animal (recebidas, encaminhadas e resolvidas).

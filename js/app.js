@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
           category: String(data.get('category') || '').trim(),
           neighborhood: String(data.get('neighborhood') || '').trim(),
           address: String(data.get('address') || '').trim(),
+          ouvidoria_protocol: String(data.get('ouvidoria_protocol') || '').trim(),
           message: String(data.get('message') || '').trim(),
           attachments,
           consent: data.get('consent') === 'on'
@@ -110,10 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setFeedback(`Demanda registrada com sucesso. Seu protocolo é ${result.protocol}.`, 'success');
       form.reset();
-      setDemandKind('Solicitação');
+      setDemandKind('Denúncia');
 
-      if (result.whatsappUrl) {
-        setTimeout(() => window.open(result.whatsappUrl, '_blank', 'noopener'), 450);
+      if (result.whatsappConfigured === false) {
+        console.warn('WhatsApp Cloud API não configurada no servidor. A demanda foi salva, mas não houve notificação automática no WhatsApp.');
       }
     } catch (error) {
       setFeedback(error.message || 'Ocorreu um erro ao registrar sua demanda.', 'error');

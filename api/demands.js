@@ -9,7 +9,7 @@ async function notifyEmail(demand) {
   const to = process.env.DEMAND_EMAIL_TO || 'contato.eltoncarvalho@gmail.com';
   const from = process.env.DEMAND_EMAIL_FROM || 'Gabinete Digital <onboarding@resend.dev>';
   const attachmentText = (demand.attachments || []).map(a => `• ${a.name}`).join('\n') || 'Nenhum';
-  const text = `Nova demanda recebida\n\nProtocolo: ${demand.protocol}\nTipo: ${displayKind(demand)}${demand.kind === 'Denúncia' ? '' : `\nCategoria: ${demand.category}`}\nNome: ${demand.name}\nWhatsApp: ${demand.phone}\nBairro: ${demand.neighborhood}\nLocal: ${demand.address || '-'}\n\nDescrição:\n${demand.message}\n\nAnexos:\n${attachmentText}\n\nConsulte os arquivos e altere o status pelo painel administrativo.`;
+  const text = `Nova demanda recebida\n\nProtocolo: ${demand.protocol}\nTipo: ${displayKind(demand)}${demand.kind === 'Denúncia' ? '' : `\nCategoria: ${demand.category}`}\nNome: ${demand.name}\nWhatsApp: ${demand.phone}\nBairro: ${demand.neighborhood}\nLocal: ${demand.address || '-'}\nProtocolo Ouvidoria: ${demand.ouvidoria_protocol || '-'}\n\nDescrição:\n${demand.message}\n\nAnexos:\n${attachmentText}\n\nConsulte os arquivos e altere o status pelo painel administrativo.`;
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from, to: [to], subject: `[${demand.protocol}] ${displayKind(demand)}${demand.kind === 'Denúncia' ? '' : ` — ${demand.category}`}`, text })
@@ -21,16 +21,26 @@ async function notifyWhatsApp(demand) {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const recipient = (process.env.WHATSAPP_GABINETE_NUMBER || '5516992934352').replace(/\D/g, '');
-  const message = `Nova demanda ${demand.protocol}\n${displayKind(demand)}${demand.kind === 'Denúncia' ? '' : ` • ${demand.category}`}\nNome: ${demand.name}\nTelefone: ${demand.phone}\nBairro: ${demand.neighborhood}\nLocal: ${demand.address || '-'}\nDescrição: ${demand.message.slice(0, 700)}\nAnexos: ${(demand.attachments || []).length}`;
+  // A notificação do WhatsApp deve ser curta; todos os detalhes ficam no painel administrativo.
+  const message = demand.kind === 'Denúncia'
+    ? 'Denúncia recebida no site.'
+    : 'Solicitação recebida no site.';
   if (!token || !phoneNumberId) {
-    return { sent: false, whatsappUrl: `https://wa.me/${recipient}?text=${encodeURIComponent(message)}` };
+    return { sent: false, configured: false, reason: 'WhatsApp Cloud API não configurada.' };
   }
   const version = process.env.WHATSAPP_GRAPH_VERSION || 'v23.0';
+  const templateName = clean(process.env.WHATSAPP_TEMPLATE_NAME, 120);
+  const languageCode = clean(process.env.WHATSAPP_TEMPLATE_LANGUAGE || 'pt_BR', 20);
+  const payload = templateName
+    ? { messaging_product: 'whatsapp', to: recipient, type: 'template', template: { name: templateName, language: { code: languageCode } } }
+    : { messaging_product: 'whatsapp', to: recipient, type: 'text', text: { body: message } };
   const response = await fetch(`https://graph.facebook.com/${version}/${phoneNumberId}/messages`, {
     method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messaging_product: 'whatsapp', to: recipient, type: 'text', text: { body: message } })
+    body: JSON.stringify(payload)
   });
-  return { sent: response.ok, status: response.status };
+  const detail = await response.text().catch(() => '');
+  if (!response.ok) console.error('WhatsApp Cloud API:', response.status, detail);
+  return { sent: response.ok, configured: true, status: response.status };
 }
 
 module.exports = async function handler(req, res) {
@@ -51,7 +61,7 @@ module.exports = async function handler(req, res) {
       protocol: makeProtocol(),
       kind,
       name: clean(b.name, 120), phone: clean(b.phone, 30), category,
-      neighborhood: clean(b.neighborhood, 100), address: clean(b.address, 180), message: clean(b.message, 3000),
+      neighborhood: clean(b.neighborhood, 100), address: clean(b.address, 180), ouvidoria_protocol: clean(b.ouvidoria_protocol, 120), message: clean(b.message, 3000),
       attachments: Array.isArray(b.attachments) ? b.attachments.slice(0, 5) : [], consent: b.consent === true,
       status: 'Nova', priority: 'Média', source: 'site'
     };
@@ -67,7 +77,7 @@ module.exports = async function handler(req, res) {
       method: 'PATCH', headers: { Prefer: 'return=minimal' },
       body: JSON.stringify({ email_notified: !!emailResult.sent, whatsapp_notified: !!waResult.sent })
     }).catch(() => {});
-    return json(res, 201, { protocol: demand.protocol, saved: true, emailNotified: !!emailResult.sent, whatsappNotified: !!waResult.sent, whatsappUrl: waResult.whatsappUrl || null });
+    return json(res, 201, { protocol: demand.protocol, saved: true, emailNotified: !!emailResult.sent, whatsappNotified: !!waResult.sent, whatsappConfigured: waResult.configured !== false });
   } catch (error) {
     console.error(error);
     return json(res, 500, { error: 'Não foi possível registrar a demanda. Verifique a configuração do Supabase.' });

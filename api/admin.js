@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
     const action = (req.query?.action || req.body?.action || '').toString();
 
     if (req.method === 'GET' && action === 'demands') {
-      const rows = await db('demands?select=id,protocol,created_at,kind,name,phone,category,neighborhood,address,message,attachments,status,priority,internal_notes,email_notified,whatsapp_notified&order=created_at.desc&limit=500');
+      const rows = await db('demands?select=id,protocol,created_at,updated_at,resolved_at,kind,name,phone,category,neighborhood,address,ouvidoria_protocol,message,attachments,status,priority,internal_notes,email_notified,whatsapp_notified&order=created_at.desc&limit=500');
       return json(res, 200, { demands: rows || [] });
     }
     if (req.method === 'GET' && action === 'content') {
@@ -29,9 +29,13 @@ module.exports = async function handler(req, res) {
       return json(res, 200, { url: signed.startsWith('http') ? signed : `${env('SUPABASE_URL')}/storage/v1${signed}` });
     }
     if (req.method === 'PUT' && action === 'demand') {
-      const { id, status, priority, internal_notes } = req.body || {};
+      const { id, status, priority, internal_notes, ouvidoria_protocol } = req.body || {};
       if (!id) return json(res, 400, { error: 'ID ausente.' });
-      const rows = await db(`demands?id=eq.${encodeURIComponent(id)}`, { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ status, priority, internal_notes: String(internal_notes || '').slice(0, 4000), updated_at: new Date().toISOString() }) });
+      const now = new Date().toISOString();
+      const patch = { status, priority, ouvidoria_protocol: String(ouvidoria_protocol || '').trim().slice(0,120), internal_notes: String(internal_notes || '').slice(0, 4000), updated_at: now };
+      if (status === 'Resolvida') patch.resolved_at = now;
+      else patch.resolved_at = null;
+      const rows = await db(`demands?id=eq.${encodeURIComponent(id)}`, { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(patch) });
       return json(res, 200, { demand: rows?.[0] || null });
     }
     if (req.method === 'PUT' && action === 'content') {

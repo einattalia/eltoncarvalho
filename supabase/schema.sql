@@ -16,12 +16,14 @@ create table if not exists public.demands (
   protocol text not null unique,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
+  resolved_at timestamptz,
   kind text not null check (kind in ('Solicitação','Denúncia')),
   name text not null,
   phone text not null,
   category text not null,
   neighborhood text not null,
   address text,
+  ouvidoria_protocol text,
   message text not null,
   attachments jsonb not null default '[]'::jsonb,
   consent boolean not null default false,
@@ -37,6 +39,7 @@ create index if not exists demands_created_at_idx on public.demands(created_at d
 create index if not exists demands_status_idx on public.demands(status);
 create index if not exists demands_category_idx on public.demands(category);
 create index if not exists demands_neighborhood_idx on public.demands(neighborhood);
+create index if not exists demands_ouvidoria_protocol_idx on public.demands(ouvidoria_protocol);
 
 create table if not exists public.site_content (
   id uuid primary key default gen_random_uuid(),

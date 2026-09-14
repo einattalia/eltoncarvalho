@@ -31,7 +31,7 @@ Sem `RESEND_API_KEY`, a demanda continua sendo salva, mas o e-mail não é envia
 ## 4. WhatsApp
 Há dois modos:
 - **Fallback imediato:** sem credenciais da API, após protocolar o site abre uma conversa `wa.me` com a mensagem pronta.
-- **Automático:** configure WhatsApp Business Cloud API com `WHATSAPP_ACCESS_TOKEN` e `WHATSAPP_PHONE_NUMBER_ID`.
+- **Automático:** configure WhatsApp Business Cloud API com `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` e `WHATSAPP_GABINETE_NUMBER`. Para uma notificação que funcione mesmo fora da janela de atendimento, crie/aprove um template chamado `denuncia_recebida_site` com o texto **“Denúncia recebida no site.”** e configure `WHATSAPP_TEMPLATE_NAME=denuncia_recebida_site` e `WHATSAPP_TEMPLATE_LANGUAGE=pt_BR`.
 
 ## 5. Painel
 Acesse `/admin/` e entre com o usuário criado no Supabase Auth.

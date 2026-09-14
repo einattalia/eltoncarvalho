@@ -96,3 +96,6 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 .instagram-status{text-align:center;min-height:1em;margin-top:8px;font-size:9px;color:#c7d3f4}
 @media(max-width:1000px){.instagram-post{flex-basis:calc((100% - 14px)/2)}}
 @media(max-width:680px){.news-grid-editorial{grid-template-columns:1fr}.instagram-feed{padding:18px;border-radius:21px}.instagram-feed-head{align-items:flex-start}.instagram-feed-head h3{font-size:30px}.instagram-feed-head>a{font-size:9px}.instagram-post{flex-basis:100%}.instagram-nav{width:36px;height:36px}.instagram-prev{left:6px}.instagram-next{right:6px}.instagram-post-copy{min-height:100px}}
+
+/* V10 — campo opcional da Ouvidoria */
+.optional-field{font-weight:400;opacity:.62;font-size:.86em}
