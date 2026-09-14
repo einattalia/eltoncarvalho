@@ -11,11 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   nav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
 
-  document.querySelectorAll('[data-kind]').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-kind]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('kind').value = btn.dataset.kind;
-  }));
+  const kindInput = document.getElementById('kind');
+  const categoryField = document.getElementById('categoryField');
+  const categorySelect = document.getElementById('categorySelect');
+
+  function setDemandKind(kind) {
+    document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
+    if (kindInput) kindInput.value = kind;
+
+    const animalComplaint = kind === 'Denúncia';
+    if (categoryField) categoryField.hidden = animalComplaint;
+    if (categorySelect) {
+      categorySelect.required = !animalComplaint;
+      categorySelect.value = animalComplaint ? 'Causa Animal' : '';
+    }
+  }
+
+  document.querySelectorAll('[data-kind]').forEach(btn => btn.addEventListener('click', () => setDemandKind(btn.dataset.kind)));
 
   const form = document.getElementById('protocolForm');
   const feedback = document.getElementById('feedback');
@@ -97,8 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setFeedback(`Demanda registrada com sucesso. Seu protocolo é ${result.protocol}.`, 'success');
       form.reset();
-      document.getElementById('kind').value = 'Solicitação';
-      document.querySelectorAll('[data-kind]').forEach((b, i) => b.classList.toggle('active', i === 0));
+      setDemandKind('Solicitação');
 
       if (result.whatsappUrl) {
         setTimeout(() => window.open(result.whatsappUrl, '_blank', 'noopener'), 450);

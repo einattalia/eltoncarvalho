@@ -24,3 +24,10 @@ Para ativar marcadores e filtros no mapa, edite `js/maps-config.js` e insira uma
 ## Atualização Gabinete Digital / Admin
 
 Esta versão inclui painel em `/admin/`, CMS editável, banco de demandas, anexos privados, notificações por e-mail/WhatsApp e scripts de configuração do Supabase. Consulte `SETUP-GABINETE-DIGITAL.md`.
+
+
+## Atualizações desta versão
+- Upload de imagens no Admin agora salva automaticamente a nova URL no CMS após o envio.
+- Gabinete Digital: aba exclusiva vermelha `Denúncia Causa Animal`.
+- `Causa Animal` não aparece mais como categoria nas solicitações.
+- Na denúncia de Causa Animal o campo Categoria fica oculto e o sistema registra automaticamente `Causa Animal`.
