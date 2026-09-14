@@ -44,7 +44,7 @@
       </div>
       <div class="hero-mini-stats">
         <div><strong data-content-key="stats.resources">+ R$ 4 mi</strong><span>recursos conquistados</span></div>
-        <div><strong data-content-key="stats.requests">+ 200</strong><span>ofícios e requerimentos</span></div>
+        <div><strong id="heroLegislativeTotal" data-counter="0">0</strong><span>ações legislativas oficiais</span></div>
         <div><strong data-content-key="stats.protocols">+ 600</strong><span>protocolos</span></div>
       </div>
     </div>
@@ -81,12 +81,14 @@
 <section class="section numbers-section" id="transparencia">
   <div class="container">
     <div class="section-heading inverse"><div><span class="section-kicker" data-content-key="numbers.kicker">Transparência</span><h2 data-content-key="numbers.title">O MANDATO EM NÚMEROS.</h2></div><p data-content-key="numbers.text">Indicadores reunidos para facilitar a prestação de contas e mostrar o volume de trabalho realizado.</p></div>
-    <div class="numbers-grid">
+    <div class="numbers-grid legislative-numbers-grid">
+      <article class="official-counter"><strong id="counterProjects" data-counter="0">0</strong><span>Projetos de Lei apresentados</span><p>Proposições de autoria de Elton Carvalho registradas oficialmente pela Câmara.</p></article>
+      <article class="official-counter"><strong id="counterRequirements" data-counter="0">0</strong><span>Requerimentos apresentados</span><p>Requerimentos vinculados ao perfil oficial do vereador na Câmara Municipal.</p></article>
+      <article class="official-counter"><strong id="counterOffices" data-counter="0">0</strong><span>Ofícios encaminhados</span><p id="officesCounterNote">Contagem vinculada à fonte oficial configurada no painel.</p></article>
       <article><strong data-content-key="numbers.resources">+ R$ 4 mi</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
-      <article><strong data-content-key="numbers.requests">+ 200</strong><span>Ofícios e requerimentos</span><p>Cobranças, solicitações e encaminhamentos feitos ao Poder Executivo.</p></article>
       <article><strong data-content-key="numbers.protocols">+ 600</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
-      <article><strong data-content-key="numbers.projects">+ 110</strong><span>Projetos de lei</span><p>Projetos apresentados e aprovados ao longo da atuação legislativa.</p></article>
     </div>
+    <div class="legislative-source"><i data-lucide="landmark"></i><span>Dados legislativos sincronizados com a Câmara Municipal de São Carlos. <small id="legislativeUpdated">Aguardando sincronização.</small></span><a href="https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe" target="_blank" rel="noopener">Ver fonte oficial ↗</a></div>
   </div>
 </section>
 

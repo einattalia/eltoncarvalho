@@ -44,3 +44,23 @@ Esta versão inclui painel em `/admin/`, CMS editável, banco de demandas, anexo
 Antes de publicar esta versão, execute no SQL Editor do Supabase o arquivo `supabase/migration-v11-dashboard.sql`. Ele adiciona `resolved_at`, usado para calcular o tempo médio até a resolução.
 
 O dashboard de relatórios agora inclui: demandas por mês, tempo médio até resolução, taxa de resolução e funil de Causa Animal (recebidas, encaminhadas e resolvidas).
+
+## v14 — Integração automática com a Câmara Municipal
+
+A seção **O mandato em números** agora possui contadores legislativos separados para:
+- Projetos de Lei apresentados;
+- Requerimentos apresentados;
+- Ofícios encaminhados.
+
+### Como ativar
+1. No Supabase SQL Editor, execute `supabase/migration-v14-legislative-stats.sql`.
+2. Faça o redeploy na Vercel.
+3. No painel `/admin`, abra **Dados da Câmara** e clique em **Sincronizar agora**.
+4. A Vercel também executará `/api/camara-sync` a cada 6 horas pelo Cron configurado em `vercel.json`.
+5. Em Vercel > Settings > Environment Variables, crie `CRON_SECRET` com uma senha longa e aleatória para proteger a sincronização agendada.
+
+### Fontes
+PLs e Requerimentos são lidos do perfil oficial de Elton Carvalho:
+`https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe`
+
+A Câmara não apresenta atualmente Ofícios como categoria própria na página de publicações do vereador. Por isso, o contador de Ofícios fica editável no Admin até existir uma fonte oficial individualizada. Caso seja identificada uma URL oficial com uma listagem exclusiva, configure `CAMARA_OFICIOS_URL` na Vercel; a sincronização passa a tentar obter automaticamente a quantidade informada nessa página.

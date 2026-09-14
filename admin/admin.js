@@ -1,4 +1,4 @@
-const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [] };
+const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [], legislative: null };
 const $ = (s) => document.querySelector(s);
 const loginView = $('#loginView'), appView = $('#appView'), panel = $('#panel'), pageTitle = $('#pageTitle');
 
@@ -10,14 +10,15 @@ $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#login
 $('#logoutBtn').addEventListener('click',logout);
 document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
 
-async function boot(){ try{ await Promise.all([loadDemands(),loadContent()]); loginView.hidden=true;appView.hidden=false;showPage('dashboard'); }catch(err){ if(state.token) $('#loginFeedback').textContent=err.message; else logout(); } }
+async function boot(){ try{ await Promise.all([loadDemands(),loadContent(),loadLegislative()]); loginView.hidden=true;appView.hidden=false;showPage('dashboard'); }catch(err){ if(state.token) $('#loginFeedback').textContent=err.message; else logout(); } }
 async function loadDemands(){state.demands=(await api('demands')).demands||[];}
 async function loadContent(){state.content=(await api('content')).content||[];}
+async function loadLegislative(){try{const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});state.legislative=r.ok?await r.json():null;}catch(_){state.legislative=null;}}
 function activate(page){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));}
 function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function isAnimal(d){return d.kind==='Denúncia'&&d.category==='Causa Animal';}
 function kindLabel(d){return isAnimal(d)?'Denúncia Causa Animal':d.kind;}
-function showPage(page){activate(page);if(page==='dashboard')renderDashboard();if(page==='demands')renderDemands();if(page==='reports')renderReports();if(page==='content')renderContent();}
+function showPage(page){activate(page);if(page==='dashboard')renderDashboard();if(page==='demands')renderDemands();if(page==='reports')renderReports();if(page==='content')renderContent();if(page==='legislative')renderLegislative();}
 
 function renderDashboard(){
   pageTitle.textContent='Visão geral';
@@ -123,3 +124,22 @@ function loadImageForOptimization(file){return new Promise((resolve,reject)=>{co
 async function optimizeSiteImage(file){if(!/^image\/(jpeg|png|webp)$/i.test(file.type))throw new Error('Formato não suportado. Use JPG, PNG ou WebP.');const img=await loadImageForOptimization(file);const srcW=img.naturalWidth||img.width,srcH=img.naturalHeight||img.height,targetBytes=750*1024;let maxSide=Math.min(1800,Math.max(srcW,srcH)),quality=.82,blob=null;for(let pass=0;pass<10;pass++){const scale=Math.min(1,maxSide/Math.max(srcW,srcH)),width=Math.max(1,Math.round(srcW*scale)),height=Math.max(1,Math.round(srcH*scale)),canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);ctx.drawImage(img,0,0,width,height);blob=await new Promise(r=>canvas.toBlob(r,'image/webp',quality));if(blob&&blob.size<=targetBytes)break;if(quality>.58)quality-=.07;else{maxSide=Math.max(900,Math.round(maxSide*.84));quality=.74;}}if(!blob)throw new Error('Não foi possível otimizar a imagem.');if(blob.size>950*1024)throw new Error('A foto ainda ficou muito grande após a otimização. Tente outra imagem ou faça uma captura de tela dela antes de enviar.');return new File([blob],(file.name.replace(/\.[^.]+$/,'')||'imagem')+'.webp',{type:'image/webp'});}
 async function uploadSiteImage(input){const original=input.files?.[0];if(!original)return;const box=input.closest('.editor'),textInput=box.querySelector('input:not([type=file])'),btn=box.querySelector('.save-content');try{if(btn){btn.disabled=true;btn.textContent='Otimizando imagem…';}const file=await optimizeSiteImage(original);if(btn)btn.textContent=`Enviando ${(file.size/1024).toFixed(0)} KB…`;const c=await config();const path=`cms/${Date.now()}-${crypto.randomUUID()}.webp`;const r=await fetch(`${c.supabaseUrl}/storage/v1/object/${c.siteMediaBucket}/${path}`,{method:'POST',headers:{apikey:c.supabasePublishableKey,Authorization:`Bearer ${state.token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});if(!r.ok){const detail=await r.text().catch(()=> '');let msg=detail||'Falha ao enviar imagem.';if(r.status===413)msg=`A imagem foi otimizada para ${(file.size/1024).toFixed(0)} KB, mas o Storage recusou o envio. Verifique o limite do bucket site-media no Supabase.`;throw new Error(msg);}textInput.value=`${c.supabaseUrl}/storage/v1/object/public/${c.siteMediaBucket}/${path}`;input.value='';if(btn)btn.textContent='Salvando imagem…';await api('content',{method:'PUT',body:JSON.stringify({id:box.dataset.contentId,value:textInput.value})});await loadContent();if(btn){btn.textContent='Imagem salva ✓';setTimeout(()=>btn.textContent='Salvar',1800);}}catch(err){alert(err.message);if(btn)btn.textContent='Salvar';}finally{if(btn)btn.disabled=false;}}
 if(state.token) boot();
+
+
+// v14 — integração Câmara Municipal
+function legislativeNumber(v){return Number(v||0).toLocaleString('pt-BR');}
+async function legislativeRequest(method='GET',body){
+  const r=await fetch('/api/legislative',{method,headers:{'Content-Type':'application/json',Authorization:`Bearer ${state.token}`},body:body?JSON.stringify(body):undefined});
+  const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.error||'Falha na integração com a Câmara.'); return d;
+}
+function renderLegislative(){
+  pageTitle.textContent='Dados da Câmara';
+  const d=state.legislative||{}, s=d.stats||{};
+  const updated=d.lastSynced?new Date(d.lastSynced).toLocaleString('pt-BR'):'Ainda não sincronizado';
+  panel.innerHTML=`<div class="toolbar"><div><strong>Produção legislativa oficial</strong><span>Contadores vinculados ao perfil de Elton Carvalho na Câmara Municipal de São Carlos.</span></div><button class="primary" id="syncChamber">Sincronizar agora</button></div>
+  <div class="cards legislative-admin-cards"><div class="metric"><strong>${legislativeNumber(s.projects)}</strong><span>Projetos de Lei apresentados</span></div><div class="metric"><strong>${legislativeNumber(s.requirements)}</strong><span>Requerimentos apresentados</span></div><div class="metric"><strong>${legislativeNumber(s.offices)}</strong><span>Ofícios encaminhados</span></div><div class="metric"><strong>${legislativeNumber(s.total)}</strong><span>Total exibido no site</span></div></div>
+  <div class="integration-card"><div><small>FONTE OFICIAL</small><h3>Câmara Municipal de São Carlos</h3><p>Projetos de Lei e Requerimentos são lidos automaticamente da área de Legislação do perfil do vereador.</p><p><b>Última sincronização:</b> ${esc(updated)}</p><a href="${esc(d.chamberUrl||'https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe')}" target="_blank" rel="noopener">Abrir perfil oficial ↗</a></div><span class="integration-status">● Conectado</span></div>
+  <div class="section-label">Ofícios</div><div class="office-setting"><div><strong>${d.officesAutomatic?'Sincronização automática ativa':'Acompanhamento pelo gabinete'}</strong><p>${d.officesAutomatic?'A fonte oficial configurada permite atualizar este contador automaticamente.':'O portal da Câmara não apresenta hoje uma categoria própria de Ofícios no perfil do vereador. Informe o total oficial abaixo; ele permanecerá separado dos Requerimentos.'}</p></div><label>Total oficial de ofícios<input id="officeCount" type="number" min="0" step="1" value="${Number(s.offices||0)}"></label><button class="primary" id="saveOffices">Salvar total</button></div>`;
+  $('#syncChamber')?.addEventListener('click',async()=>{const b=$('#syncChamber');b.disabled=true;b.textContent='Sincronizando…';try{await legislativeRequest('POST');await loadLegislative();renderLegislative();}catch(err){alert(err.message);b.disabled=false;b.textContent='Sincronizar agora';}});
+  $('#saveOffices')?.addEventListener('click',async()=>{const b=$('#saveOffices');b.disabled=true;b.textContent='Salvando…';try{await legislativeRequest('PUT',{offices:$('#officeCount').value});await loadLegislative();renderLegislative();}catch(err){alert(err.message);b.disabled=false;b.textContent='Salvar total';}});
+}

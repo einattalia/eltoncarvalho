@@ -306,3 +306,10 @@ tbody tr.animal-demand .open-btn{background:#fff;border-color:rgba(255,255,255,.
 @media(max-width:900px){.advanced-grid{grid-template-columns:1fr}.advanced-metrics{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.advanced-metrics{grid-template-columns:1fr 1fr}.month-chart{height:175px}.month-track{height:115px}.flow-steps{grid-template-columns:1fr;gap:6px;margin-top:12px}.flow-steps>i{width:2px;height:12px;margin:auto}.flow-steps>i:after{content:'⌄';right:auto;left:50%;top:auto;bottom:-5px;transform:translateX(-50%)}}
 @media print{.advanced-grid{grid-template-columns:1fr 1fr}.advanced-metrics{grid-template-columns:repeat(4,1fr)}.month-chart{overflow:visible}.month-col{min-width:0}.flow-step{padding:8px}}
+
+/* v14 — Dados da Câmara */
+.legislative-admin-cards{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
+.integration-card,.office-setting{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;gap:20px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.integration-card small{font-size:9px;letter-spacing:.12em;color:var(--muted);font-weight:700}.integration-card h3{margin:4px 0 8px}.integration-card p,.office-setting p{font-size:11px;line-height:1.6;color:var(--muted);max-width:720px}.integration-card a{font-size:11px;font-weight:700;color:var(--blue)}.integration-status{font-size:10px;font-weight:700;color:#16803c;background:#edf9f1;padding:8px 10px;border-radius:999px;white-space:nowrap}.office-setting label{font-size:10px;font-weight:700;min-width:180px}.office-setting input{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:inherit}.office-setting .primary{align-self:flex-end;white-space:nowrap}
+@media(max-width:900px){.legislative-admin-cards{grid-template-columns:repeat(2,1fr)}.integration-card,.office-setting{flex-direction:column}.office-setting label{width:100%}.office-setting .primary{align-self:stretch}}
+@media(max-width:520px){.legislative-admin-cards{grid-template-columns:1fr}}

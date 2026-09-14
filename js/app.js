@@ -123,3 +123,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// v14 — contadores legislativos sincronizados com a Câmara Municipal
+(() => {
+  function formatPt(value){ return Number(value || 0).toLocaleString('pt-BR'); }
+  function animateCounter(el, target){
+    if(!el) return;
+    target = Math.max(0, Number(target || 0));
+    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){ el.textContent=formatPt(target); return; }
+    const start=performance.now(), duration=1100;
+    function frame(now){
+      const p=Math.min(1,(now-start)/duration), eased=1-Math.pow(1-p,3);
+      el.textContent=formatPt(Math.round(target*eased));
+      if(p<1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  async function loadLegislativeStats(){
+    try{
+      const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});
+      if(!r.ok) throw new Error('indisponível');
+      const data=await r.json(), stats=data.stats||{};
+      animateCounter(document.getElementById('counterProjects'),stats.projects);
+      animateCounter(document.getElementById('counterRequirements'),stats.requirements);
+      animateCounter(document.getElementById('counterOffices'),stats.offices);
+      animateCounter(document.getElementById('heroLegislativeTotal'),stats.total);
+      const updated=document.getElementById('legislativeUpdated');
+      if(updated && data.lastSynced){ updated.textContent=`Última atualização: ${new Date(data.lastSynced).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`; }
+      const officeNote=document.getElementById('officesCounterNote');
+      if(officeNote && !data.officesAutomatic) officeNote.textContent='Valor acompanhado pelo gabinete até existir uma listagem oficial própria de ofícios no portal da Câmara.';
+    }catch(_){
+      const updated=document.getElementById('legislativeUpdated');
+      if(updated) updated.textContent='Sincronização temporariamente indisponível.';
+    }
+  }
+  document.addEventListener('DOMContentLoaded',loadLegislativeStats);
+})();
