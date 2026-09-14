@@ -44,3 +44,6 @@ O painel permite:
 
 ## 6. Privacidade
 Os anexos de denúncias ficam em bucket privado. O site público pode criar arquivos, mas não possui política para listar ou ler esses anexos. O conteúdo editorial (`site-media`) é público porque precisa ser exibido na página.
+
+## Admin na Vercel
+Os arquivos do painel usam caminhos absolutos (`/admin/admin.css` e `/admin/admin.js`) para funcionar tanto em `/admin` quanto em `/admin/` com `cleanUrls` da Vercel.
