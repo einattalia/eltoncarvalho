@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.querySelectorAll('[data-kind]').forEach(btn => btn.addEventListener('click', () => setDemandKind(btn.dataset.kind)));
+  setDemandKind(kindInput?.value || 'Denúncia');
 
   const form = document.getElementById('protocolForm');
   const feedback = document.getElementById('feedback');

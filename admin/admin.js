@@ -28,20 +28,32 @@ function loadImageForOptimization(file){return new Promise((resolve,reject)=>{co
 async function optimizeSiteImage(file){
   if(!/^image\/(jpeg|png|webp)$/i.test(file.type)) throw new Error('Formato não suportado. Use JPG, PNG ou WebP.');
   const img=await loadImageForOptimization(file);
-  const maxSide=2200;
-  const scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
-  const width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));
-  const height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
-  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
-  const ctx=canvas.getContext('2d',{alpha:true});
-  ctx.drawImage(img,0,0,width,height);
-  let quality=.86;
-  let blob=await new Promise(r=>canvas.toBlob(r,'image/webp',quality));
-  while(blob && blob.size>7*1024*1024 && quality>.55){quality-=.08;blob=await new Promise(r=>canvas.toBlob(r,'image/webp',quality));}
+  const srcW=img.naturalWidth||img.width;
+  const srcH=img.naturalHeight||img.height;
+  const targetBytes=750*1024; // mantém o arquivo bem abaixo do limite do Storage
+  let maxSide=Math.min(1800,Math.max(srcW,srcH));
+  let quality=.82;
+  let blob=null;
+
+  for(let pass=0;pass<10;pass++){
+    const scale=Math.min(1,maxSide/Math.max(srcW,srcH));
+    const width=Math.max(1,Math.round(srcW*scale));
+    const height=Math.max(1,Math.round(srcH*scale));
+    const canvas=document.createElement('canvas');
+    canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
+    ctx.drawImage(img,0,0,width,height);
+    blob=await new Promise(r=>canvas.toBlob(r,'image/webp',quality));
+    if(blob && blob.size<=targetBytes) break;
+    if(quality>.58) quality-=.07;
+    else { maxSide=Math.max(900,Math.round(maxSide*.84)); quality=.74; }
+  }
+
   if(!blob) throw new Error('Não foi possível otimizar a imagem.');
-  if(blob.size>9*1024*1024) throw new Error('A imagem continua muito grande mesmo após otimização. Escolha uma foto menor.');
+  if(blob.size>950*1024) throw new Error('A foto ainda ficou muito grande após a otimização. Tente outra imagem ou faça uma captura de tela dela antes de enviar.');
   return new File([blob],(file.name.replace(/\.[^.]+$/,'')||'imagem')+'.webp',{type:'image/webp'});
 }
 
-async function uploadSiteImage(input){const original=input.files?.[0];if(!original)return;const box=input.closest('.editor'),textInput=box.querySelector('input:not([type=file])'),btn=box.querySelector('.save-content');try{if(btn){btn.disabled=true;btn.textContent='Otimizando imagem…';}const file=await optimizeSiteImage(original);if(btn)btn.textContent='Enviando imagem…';const c=await config();const path=`cms/${Date.now()}-${crypto.randomUUID()}.webp`;const r=await fetch(`${c.supabaseUrl}/storage/v1/object/${c.siteMediaBucket}/${path}`,{method:'POST',headers:{apikey:c.supabasePublishableKey,Authorization:`Bearer ${state.token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});if(!r.ok){const detail=await r.text().catch(()=> '');let msg=detail||'Falha ao enviar imagem.';if(r.status===413)msg='A imagem excedeu o limite permitido. O Admin tentou otimizá-la automaticamente; escolha uma imagem menor se o problema persistir.';throw new Error(msg);}textInput.value=`${c.supabaseUrl}/storage/v1/object/public/${c.siteMediaBucket}/${path}`;input.value='';if(btn){btn.textContent='Salvando imagem…';}await api('content',{method:'PUT',body:JSON.stringify({id:box.dataset.contentId,value:textInput.value})});await loadContent();if(btn){btn.textContent='Imagem salva ✓';setTimeout(()=>btn.textContent='Salvar',1800);}}catch(err){alert(err.message);if(btn)btn.textContent='Salvar';}finally{if(btn)btn.disabled=false;}}
+async function uploadSiteImage(input){const original=input.files?.[0];if(!original)return;const box=input.closest('.editor'),textInput=box.querySelector('input:not([type=file])'),btn=box.querySelector('.save-content');try{if(btn){btn.disabled=true;btn.textContent='Otimizando imagem…';}const file=await optimizeSiteImage(original);if(btn)btn.textContent=`Enviando ${(file.size/1024).toFixed(0)} KB…`;const c=await config();const path=`cms/${Date.now()}-${crypto.randomUUID()}.webp`;const r=await fetch(`${c.supabaseUrl}/storage/v1/object/${c.siteMediaBucket}/${path}`,{method:'POST',headers:{apikey:c.supabasePublishableKey,Authorization:`Bearer ${state.token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});if(!r.ok){const detail=await r.text().catch(()=> '');let msg=detail||'Falha ao enviar imagem.';if(r.status===413)msg=`A imagem foi otimizada para ${(file.size/1024).toFixed(0)} KB, mas o Storage recusou o envio. Verifique o limite do bucket site-media no Supabase.`;throw new Error(msg);}textInput.value=`${c.supabaseUrl}/storage/v1/object/public/${c.siteMediaBucket}/${path}`;input.value='';if(btn){btn.textContent='Salvando imagem…';}await api('content',{method:'PUT',body:JSON.stringify({id:box.dataset.contentId,value:textInput.value})});await loadContent();if(btn){btn.textContent='Imagem salva ✓';setTimeout(()=>btn.textContent='Salvar',1800);}}catch(err){alert(err.message);if(btn)btn.textContent='Salvar';}finally{if(btn)btn.disabled=false;}}
 if(state.token) boot();
