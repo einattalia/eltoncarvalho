@@ -18,22 +18,95 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   const form = document.getElementById('protocolForm');
-  form?.addEventListener('submit', e => {
+  const feedback = document.getElementById('feedback');
+  const submit = document.getElementById('submitDemand');
+
+  function setFeedback(message, mode = '') {
+    if (!feedback) return;
+    feedback.textContent = message;
+    feedback.className = `feedback ${mode}`.trim();
+  }
+
+  async function getPublicConfig() {
+    const res = await fetch('/api/config');
+    if (!res.ok) throw new Error('Configuração do servidor indisponível.');
+    return res.json();
+  }
+
+  async function uploadAttachment(config, file, requestId, index) {
+    const ext = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const safeName = `${String(index + 1).padStart(2, '0')}-${crypto.randomUUID()}.${ext}`;
+    const path = `${requestId}/${safeName}`;
+    const endpoint = `${config.supabaseUrl}/storage/v1/object/${config.demandBucket}/${path}`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        apikey: config.supabasePublishableKey,
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'false'
+      },
+      body: file
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`Falha ao enviar o anexo ${file.name}. ${detail}`.trim());
+    }
+    return { path, name: file.name, type: file.type, size: file.size };
+  }
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
-    const protocol = `EC-${new Date().toISOString().slice(0,10).replaceAll('-','')}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
     const files = data.getAll('files').filter(f => f && f.name);
-    const text = [
-      `Olá, gabinete do vereador Elton Carvalho.`,
-      ``,
-      `*Protocolo:* ${protocol}`,
-      `*Tipo:* ${data.get('kind')}`,
-      `*Nome:* ${data.get('name')}`,
-      `*WhatsApp:* ${data.get('phone')}`,
-      `*Assunto:* ${data.get('message')}`,
-      files.length ? `*Anexos:* ${files.length} arquivo(s) selecionado(s). Vou enviá-los nesta conversa.` : ''
-    ].filter(Boolean).join('\n');
-    document.getElementById('feedback').textContent = `Protocolo ${protocol} criado. Abrindo o WhatsApp…`;
-    window.open(`https://wa.me/5516992934352?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+
+    if (files.length > 5) return setFeedback('Envie no máximo 5 arquivos por protocolo.', 'error');
+    const oversized = files.find(file => file.size > 10 * 1024 * 1024);
+    if (oversized) return setFeedback(`O arquivo ${oversized.name} ultrapassa o limite de 10 MB.`, 'error');
+
+    submit.disabled = true;
+    setFeedback('Registrando sua demanda…');
+
+    try {
+      const requestId = crypto.randomUUID();
+      const config = await getPublicConfig();
+      const attachments = [];
+      for (let i = 0; i < files.length; i += 1) {
+        setFeedback(`Enviando anexo ${i + 1} de ${files.length}…`);
+        attachments.push(await uploadAttachment(config, files[i], requestId, i));
+      }
+
+      setFeedback('Salvando protocolo e notificando o gabinete…');
+      const response = await fetch('/api/demands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestId,
+          kind: data.get('kind'),
+          name: String(data.get('name') || '').trim(),
+          phone: String(data.get('phone') || '').trim(),
+          category: String(data.get('category') || '').trim(),
+          neighborhood: String(data.get('neighborhood') || '').trim(),
+          address: String(data.get('address') || '').trim(),
+          message: String(data.get('message') || '').trim(),
+          attachments,
+          consent: data.get('consent') === 'on'
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Não foi possível registrar a demanda.');
+
+      setFeedback(`Demanda registrada com sucesso. Seu protocolo é ${result.protocol}.`, 'success');
+      form.reset();
+      document.getElementById('kind').value = 'Solicitação';
+      document.querySelectorAll('[data-kind]').forEach((b, i) => b.classList.toggle('active', i === 0));
+
+      if (result.whatsappUrl) {
+        setTimeout(() => window.open(result.whatsappUrl, '_blank', 'noopener'), 450);
+      }
+    } catch (error) {
+      setFeedback(error.message || 'Ocorreu um erro ao registrar sua demanda.', 'error');
+    } finally {
+      submit.disabled = false;
+    }
   });
 });

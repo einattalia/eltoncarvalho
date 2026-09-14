@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="js/content.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -33,21 +34,21 @@
 <section class="hero" id="inicio">
   <div class="container hero-grid">
     <div class="hero-copy">
-      <span class="kicker">Vereador de São Carlos • 3º mandato</span>
-      <h1>TRABALHO QUE VOCÊ VÊ.<br><span>PRESENÇA QUE VOCÊ SENTE.</span></h1>
-      <p>Um mandato próximo, presente nos bairros e focado em saúde, causa animal, infraestrutura e qualidade de vida.</p>
+      <span class="kicker" data-content-key="hero.kicker">Vereador de São Carlos • 3º mandato</span>
+      <h1 data-content-key="hero.title" data-content-type="html">TRABALHO QUE VOCÊ VÊ.<br><span>PRESENÇA QUE VOCÊ SENTE.</span></h1>
+      <p data-content-key="hero.subtitle">Um mandato próximo, presente nos bairros e focado em saúde, causa animal, infraestrutura e qualidade de vida.</p>
       <div class="hero-actions">
         <a class="button button-yellow" href="#atuacao">Conheça o mandato <i data-lucide="arrow-right"></i></a>
         <a class="button button-outline" href="#gabinete"><i data-lucide="message-square"></i> Enviar uma demanda</a>
       </div>
       <div class="hero-mini-stats">
-        <div><strong>+ R$ 4 mi</strong><span>recursos conquistados</span></div>
-        <div><strong>+ 200</strong><span>ofícios e requerimentos</span></div>
-        <div><strong>+ 600</strong><span>protocolos</span></div>
+        <div><strong data-content-key="stats.resources">+ R$ 4 mi</strong><span>recursos conquistados</span></div>
+        <div><strong data-content-key="stats.requests">+ 200</strong><span>ofícios e requerimentos</span></div>
+        <div><strong data-content-key="stats.protocols">+ 600</strong><span>protocolos</span></div>
       </div>
     </div>
     <div class="hero-visual">
-      <div class="photo-frame"><img src="https://eltoncarvalho.netlify.app/assets/animal.jpg" alt="Elton Carvalho em atividade do mandato"></div>
+      <div class="photo-frame"><img data-content-key="hero.image" data-content-type="image" src="https://eltoncarvalho.netlify.app/assets/animal.jpg" alt="Elton Carvalho em atividade do mandato"></div>
       <div class="hero-ribbon"><i data-lucide="map-pin"></i><span><strong>São Carlos inteira</strong><small>Presença nos bairros e distritos</small></span></div>
     </div>
   </div>
@@ -61,11 +62,11 @@
 
 <section class="section" id="sobre">
   <div class="container story-grid">
-    <div class="story-photo"><img src="https://eltoncarvalho.netlify.app/assets/saude.jpeg" alt="Atuação de Elton Carvalho na saúde"></div>
+    <div class="story-photo"><img data-content-key="about.image" data-content-type="image" src="https://eltoncarvalho.netlify.app/assets/saude.jpeg" alt="Atuação de Elton Carvalho na saúde"></div>
     <div class="story-copy">
-      <span class="section-kicker">Minha trajetória</span>
-      <h2>POLÍTICA FEITA PERTO DAS PESSOAS.</h2>
-      <p class="lead">Servidor público no SUS há 17 anos, Elton Carvalho une experiência na saúde, gestão pública e trabalho de rua para transformar demandas em ações concretas.</p>
+      <span class="section-kicker" data-content-key="about.kicker">Minha trajetória</span>
+      <h2 data-content-key="about.title">POLÍTICA FEITA PERTO DAS PESSOAS.</h2>
+      <p class="lead" data-content-key="about.text">Servidor público no SUS há 17 anos, Elton Carvalho une experiência na saúde, gestão pública e trabalho de rua para transformar demandas em ações concretas.</p>
       <div class="story-points">
         <div><i data-lucide="stethoscope"></i><span><strong>Saúde pública</strong><small>Servidor do SUS e presidente da Comissão de Saúde e Promoção Social.</small></span></div>
         <div><i data-lucide="paw-print"></i><span><strong>Causa animal</strong><small>Presidente da Frente Parlamentar de Defesa Animal.</small></span></div>
@@ -78,24 +79,24 @@
 
 <section class="section numbers-section" id="transparencia">
   <div class="container">
-    <div class="section-heading inverse"><div><span class="section-kicker">Transparência</span><h2>O MANDATO EM NÚMEROS.</h2></div><p>Indicadores reunidos para facilitar a prestação de contas e mostrar o volume de trabalho realizado.</p></div>
+    <div class="section-heading inverse"><div><span class="section-kicker" data-content-key="numbers.kicker">Transparência</span><h2 data-content-key="numbers.title">O MANDATO EM NÚMEROS.</h2></div><p data-content-key="numbers.text">Indicadores reunidos para facilitar a prestação de contas e mostrar o volume de trabalho realizado.</p></div>
     <div class="numbers-grid">
-      <article><strong>+ R$ 4 mi</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
-      <article><strong>+ 200</strong><span>Ofícios e requerimentos</span><p>Cobranças, solicitações e encaminhamentos feitos ao Poder Executivo.</p></article>
-      <article><strong>+ 600</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
-      <article><strong>+ 110</strong><span>Projetos de lei</span><p>Projetos apresentados e aprovados ao longo da atuação legislativa.</p></article>
+      <article><strong data-content-key="numbers.resources">+ R$ 4 mi</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
+      <article><strong data-content-key="numbers.requests">+ 200</strong><span>Ofícios e requerimentos</span><p>Cobranças, solicitações e encaminhamentos feitos ao Poder Executivo.</p></article>
+      <article><strong data-content-key="numbers.protocols">+ 600</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
+      <article><strong data-content-key="numbers.projects">+ 110</strong><span>Projetos de lei</span><p>Projetos apresentados e aprovados ao longo da atuação legislativa.</p></article>
     </div>
   </div>
 </section>
 
 <section class="section soft" id="atuacao">
   <div class="container">
-    <div class="section-heading"><div><span class="section-kicker">Principais ações</span><h2>ONDE O MANDATO ATUA.</h2></div><p>Frentes de trabalho que concentram fiscalização, proposições, recursos e atendimento às demandas da população.</p></div>
+    <div class="section-heading"><div><span class="section-kicker" data-content-key="areas.kicker">Principais ações</span><h2 data-content-key="areas.title">ONDE O MANDATO ATUA.</h2></div><p data-content-key="areas.text">Frentes de trabalho que concentram fiscalização, proposições, recursos e atendimento às demandas da população.</p></div>
     <div class="areas-grid">
-      <article class="area-card"><span class="area-icon"><i data-lucide="stethoscope"></i></span><h3>Saúde</h3><p>Fiscalização das unidades, melhoria no atendimento e busca de recursos para ampliar a estrutura do SUS.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="paw-print"></i></span><h3>Causa Animal</h3><p>Proteção, combate aos maus-tratos, políticas de adoção, atendimento veterinário e fortalecimento do bem-estar animal.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="building-2"></i></span><h3>Infraestrutura</h3><p>Manutenção urbana, vias, iluminação, descarte irregular, mato alto e melhorias nos bairros.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="heart-handshake"></i></span><h3>Área Social</h3><p>Apoio a famílias, entidades e iniciativas que ampliam oportunidades e fortalecem a rede de proteção social.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="stethoscope"></i></span><h3 data-content-key="areas.health.title">Saúde</h3><p data-content-key="areas.health.text">Fiscalização das unidades, melhoria no atendimento e busca de recursos para ampliar a estrutura do SUS.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="paw-print"></i></span><h3 data-content-key="areas.animal.title">Causa Animal</h3><p data-content-key="areas.animal.text">Proteção, combate aos maus-tratos, políticas de adoção, atendimento veterinário e fortalecimento do bem-estar animal.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="building-2"></i></span><h3 data-content-key="areas.infra.title">Infraestrutura</h3><p data-content-key="areas.infra.text">Manutenção urbana, vias, iluminação, descarte irregular, mato alto e melhorias nos bairros.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="heart-handshake"></i></span><h3 data-content-key="areas.social.title">Área Social</h3><p data-content-key="areas.social.text">Apoio a famílias, entidades e iniciativas que ampliam oportunidades e fortalecem a rede de proteção social.</p><span class="area-link">Ver atuação <i data-lucide="arrow-up-right"></i></span></article>
     </div>
   </div>
 </section>
@@ -120,7 +121,7 @@
 
 <section class="section transparency-section">
   <div class="container transparency-grid">
-    <div><span class="section-kicker">Mandato aberto</span><h2>ACOMPANHE O TRABALHO.</h2><p class="lead">Uma área pensada para organizar projetos, requerimentos, recursos e ações do gabinete de maneira simples para o cidadão.</p></div>
+    <div><span class="section-kicker" data-content-key="transparency.kicker">Mandato aberto</span><h2 data-content-key="transparency.title">ACOMPANHE O TRABALHO.</h2><p class="lead" data-content-key="transparency.text">Uma área pensada para organizar projetos, requerimentos, recursos e ações do gabinete de maneira simples para o cidadão.</p></div>
     <div class="transparency-cards">
       <article><i data-lucide="file-text"></i><span><strong>Projetos de Lei</strong><small>Propostas apresentadas e aprovadas.</small></span><i data-lucide="chevron-right"></i></article>
       <article><i data-lucide="clipboard-list"></i><span><strong>Ofícios e requerimentos</strong><small>Solicitações e cobranças enviadas.</small></span><i data-lucide="chevron-right"></i></article>
@@ -132,17 +133,25 @@
 
 <section class="section gabinete-section" id="gabinete">
   <div class="container gabinete-grid">
-    <div class="gabinete-copy"><span class="section-kicker">Participação popular</span><h2>GABINETE DIGITAL.</h2><p class="lead">Envie sua solicitação ou denúncia diretamente ao mandato. O formulário cria um número de protocolo e abre a mensagem pronta no WhatsApp do gabinete.</p><div class="gabinete-benefits"><div><i data-lucide="badge-check"></i><span><strong>Protocolo automático</strong><small>Você recebe um código para identificar o atendimento.</small></span></div><div><i data-lucide="smartphone"></i><span><strong>Direto no WhatsApp</strong><small>A mensagem chega pronta para continuar o atendimento.</small></span></div><div><i data-lucide="paw-print"></i><span><strong>Denúncia de maus-tratos</strong><small>Canal também preparado para demandas da causa animal.</small></span></div></div></div>
+    <div class="gabinete-copy"><span class="section-kicker">Participação popular</span><h2 data-content-key="gabinete.title">GABINETE DIGITAL.</h2><p class="lead" data-content-key="gabinete.text">Envie sua solicitação ou denúncia diretamente ao mandato. A demanda fica registrada, recebe protocolo e é encaminhada ao gabinete.</p><div class="gabinete-benefits"><div><i data-lucide="badge-check"></i><span><strong>Protocolo automático</strong><small>Você recebe um código único para identificar o atendimento.</small></span></div><div><i data-lucide="database"></i><span><strong>Registro seguro</strong><small>A demanda e os anexos ficam organizados para acompanhamento do gabinete.</small></span></div><div><i data-lucide="message-circle"></i><span><strong>Gabinete notificado</strong><small>O atendimento é encaminhado ao WhatsApp e uma cópia segue por e-mail.</small></span></div></div></div>
     <form class="protocol-card" id="protocolForm">
       <div class="form-head"><span>Nova demanda</span><strong>Fale com o gabinete</strong></div>
       <div class="tabs"><button type="button" class="active" data-kind="Solicitação">Solicitação</button><button type="button" data-kind="Denúncia">Denúncia</button></div>
       <input type="hidden" name="kind" id="kind" value="Solicitação">
-      <label>Nome completo<input name="name" required placeholder="Seu nome"></label>
-      <label>WhatsApp<input name="phone" required placeholder="(16) 99999-9999"></label>
-      <label>Descreva sua demanda<textarea name="message" required rows="5" placeholder="Conte para nós como podemos ajudar"></textarea></label>
-      <label class="file-field">Fotos ou vídeos<input name="files" type="file" multiple accept="image/*,video/*"></label>
-      <p class="file-note">Os anexos poderão ser enviados na conversa do WhatsApp após a abertura da mensagem.</p>
-      <button class="button button-blue full" type="submit">Protocolar e abrir WhatsApp <i data-lucide="send"></i></button>
+      <div class="form-grid two-cols">
+        <label>Nome completo<input name="name" required maxlength="120" placeholder="Seu nome"></label>
+        <label>WhatsApp<input name="phone" required inputmode="tel" maxlength="24" placeholder="(16) 99999-9999"></label>
+      </div>
+      <div class="form-grid two-cols">
+        <label>Categoria<select name="category" required><option value="">Selecione</option><option>Saúde</option><option>Causa Animal</option><option>Educação</option><option>Zeladoria</option><option>Infraestrutura</option><option>Área Social</option><option>Outros</option></select></label>
+        <label>Bairro<input name="neighborhood" required maxlength="100" placeholder="Ex.: Santa Felícia"></label>
+      </div>
+      <label>Local / endereço da ocorrência<input name="address" maxlength="180" placeholder="Rua, número ou ponto de referência"></label>
+      <label>Descreva sua demanda<textarea name="message" required maxlength="3000" rows="5" placeholder="Conte para nós como podemos ajudar"></textarea></label>
+      <label class="file-field">Fotos ou vídeos<input name="files" type="file" multiple accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"></label>
+      <p class="file-note">Você pode anexar até 5 arquivos. As imagens e vídeos ficam vinculados ao protocolo para consulta do gabinete.</p>
+      <label class="consent-check"><input name="consent" type="checkbox" required><span>Autorizo o uso destes dados exclusivamente para registro, encaminhamento e acompanhamento desta demanda.</span></label>
+      <button class="button button-blue full" id="submitDemand" type="submit">Protocolar demanda <i data-lucide="send"></i></button>
       <p class="feedback" id="feedback" aria-live="polite"></p>
     </form>
   </div>
@@ -150,19 +159,19 @@
 
 <section class="section news-section" id="noticias">
   <div class="container">
-    <div class="section-heading"><div><span class="section-kicker">Acompanhe o mandato</span><h2>ÚLTIMAS ATUALIZAÇÕES.</h2></div><p>Notícias, fiscalizações, projetos e ações do dia a dia.</p></div>
+    <div class="section-heading"><div><span class="section-kicker" data-content-key="news.kicker">Acompanhe o mandato</span><h2 data-content-key="news.title">ÚLTIMAS ATUALIZAÇÕES.</h2></div><p data-content-key="news.text">Notícias, fiscalizações, projetos e ações do dia a dia.</p></div>
     <div class="news-grid">
-      <a class="news-card" href="https://www.saocarlosnotoque.com" target="_blank" rel="noopener"><span>Mandato</span><h3>Veja notícias e ações do mandato em São Carlos</h3><p>Acompanhe as publicações mais recentes sobre projetos, fiscalizações e resultados.</p><strong>Ler matérias <i data-lucide="arrow-up-right"></i></strong></a>
-      <a class="news-card" href="https://www.saocarlosagora.com.br" target="_blank" rel="noopener"><span>Imprensa</span><h3>Atualizações sobre a atuação de Elton Carvalho</h3><p>Informação local com acompanhamento das ações do Legislativo.</p><strong>Acessar portal <i data-lucide="arrow-up-right"></i></strong></a>
-      <a class="news-card social-card" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener"><span>Instagram</span><h3>@eltoncarvalho10192</h3><p>Bastidores, agenda, fiscalização, saúde e causa animal.</p><strong>Seguir perfil <i data-lucide="instagram"></i></strong></a>
+      <a class="news-card" href="https://www.saocarlosnotoque.com" target="_blank" rel="noopener"><span>Mandato</span><h3 data-content-key="news.card1.title">Veja notícias e ações do mandato em São Carlos</h3><p data-content-key="news.card1.text">Acompanhe as publicações mais recentes sobre projetos, fiscalizações e resultados.</p><strong>Ler matérias <i data-lucide="arrow-up-right"></i></strong></a>
+      <a class="news-card" href="https://www.saocarlosagora.com.br" target="_blank" rel="noopener"><span>Imprensa</span><h3 data-content-key="news.card2.title">Atualizações sobre a atuação de Elton Carvalho</h3><p data-content-key="news.card2.text">Informação local com acompanhamento das ações do Legislativo.</p><strong>Acessar portal <i data-lucide="arrow-up-right"></i></strong></a>
+      <a class="news-card social-card" href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener"><span>Instagram</span><h3 data-content-key="news.instagram.title">@eltoncarvalho10192</h3><p data-content-key="news.instagram.text">Bastidores, agenda, fiscalização, saúde e causa animal.</p><strong>Seguir perfil <i data-lucide="instagram"></i></strong></a>
     </div>
   </div>
 </section>
 
-<section class="final-call"><div class="container final-grid"><div><span class="section-kicker">São Carlos</span><h2>SÃO CARLOS É FEITA DE HISTÓRIAS.<br>A MINHA É TRABALHAR POR ELAS.</h2></div><a class="button button-yellow" href="https://wa.me/5516992934352" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Falar no WhatsApp</a></div></section>
+<section class="final-call"><div class="container final-grid"><div><span class="section-kicker">São Carlos</span><h2 data-content-key="final.title" data-content-type="html">SÃO CARLOS É FEITA DE HISTÓRIAS.<br>A MINHA É TRABALHAR POR ELAS.</h2></div><a class="button button-yellow" href="https://wa.me/5516992934352" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Falar no WhatsApp</a></div></section>
 </main>
 
-<footer><div class="container footer-grid"><div><img class="footer-logo" src="assets/brand/logo-white.png" alt="Elton Carvalho Vereador"><p>Mandato presente, transparente e conectado com São Carlos.</p></div><div><strong>Navegação</strong><a href="#sobre">Sobre</a><a href="#atuacao">Atuação</a><a href="#mapa">Mapa</a><a href="#gabinete">Gabinete Digital</a></div><div><strong>Contato</strong><a href="https://wa.me/5516992934352" target="_blank" rel="noopener">(16) 99293-4352</a><a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">@eltoncarvalho10192</a><span>São Carlos • SP</span></div></div></footer>
+<footer><div class="container footer-grid"><div><img class="footer-logo" src="assets/brand/logo-white.png" alt="Elton Carvalho Vereador"><p data-content-key="footer.text">Mandato presente, transparente e conectado com São Carlos.</p></div><div><strong>Navegação</strong><a href="#sobre">Sobre</a><a href="#atuacao">Atuação</a><a href="#mapa">Mapa</a><a href="#gabinete">Gabinete Digital</a></div><div><strong>Contato</strong><a href="https://wa.me/5516992934352" target="_blank" rel="noopener">(16) 99293-4352</a><a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">@eltoncarvalho10192</a><span>São Carlos • SP</span></div></div></footer>
 <div class="footer-pattern" aria-hidden="true"></div>
 <script src="js/maps-config.js"></script><script src="js/map-actions.js"></script>
 </body>

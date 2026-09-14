@@ -20,3 +20,7 @@ Para ativar marcadores e filtros no mapa, edite `js/maps-config.js` e insira uma
 - Pattern aplicado como assinatura gráfica
 - Gabinete Digital preservado
 - Mapa interativo preservado e integrado ao novo layout
+
+## Atualização Gabinete Digital / Admin
+
+Esta versão inclui painel em `/admin/`, CMS editável, banco de demandas, anexos privados, notificações por e-mail/WhatsApp e scripts de configuração do Supabase. Consulte `SETUP-GABINETE-DIGITAL.md`.
