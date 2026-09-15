@@ -1,4 +1,4 @@
-const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [], legislative: null };
+const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [], legislative: null, loadErrors: [] };
 const $ = (s) => document.querySelector(s);
 const loginView = $('#loginView'), appView = $('#appView'), panel = $('#panel'), pageTitle = $('#pageTitle');
 
@@ -10,7 +10,18 @@ $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#login
 $('#logoutBtn').addEventListener('click',logout);
 document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
 
-async function boot(){ try{ await Promise.all([loadDemands(),loadContent(),loadLegislative()]); loginView.hidden=true;appView.hidden=false;showPage('dashboard'); }catch(err){ if(state.token) $('#loginFeedback').textContent=err.message; else logout(); } }
+async function boot(){
+  try{
+    await api('ping');
+    state.loadErrors=[];
+    const jobs=[['Demandas',loadDemands],['Conteúdo do site',loadContent],['Dados da Câmara',loadLegislative]];
+    const results=await Promise.allSettled(jobs.map(([,fn])=>fn()));
+    results.forEach((r,i)=>{if(r.status==='rejected') state.loadErrors.push(`${jobs[i][0]}: ${r.reason?.message||'falha ao carregar'}`);});
+    loginView.hidden=true; appView.hidden=false; $('#loginFeedback').textContent=''; showPage('dashboard');
+  }catch(err){
+    if(state.token) $('#loginFeedback').textContent=err.message; else logout();
+  }
+}
 async function loadDemands(){state.demands=(await api('demands')).demands||[];}
 async function loadContent(){state.content=(await api('content')).content||[];}
 async function loadLegislative(){try{const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});state.legislative=r.ok?await r.json():null;}catch(_){state.legislative=null;}}
@@ -22,12 +33,13 @@ function showPage(page){activate(page);if(page==='dashboard')renderDashboard();i
 
 function renderDashboard(){
   pageTitle.textContent='Visão geral';
+  const loadWarning=state.loadErrors.length?`<div class="admin-load-warning"><strong>Painel aberto, mas há módulos que precisam de atenção:</strong><ul>${state.loadErrors.map(e=>`<li>${esc(e)}</li>`).join('')}</ul><p>O restante do Admin continua disponível. Verifique as migrações do Supabase e as variáveis da Vercel.</p></div>`:'';
   const total=state.demands.length;
   const open=state.demands.filter(d=>!['Resolvida','Arquivada'].includes(d.status)).length;
   const resolved=state.demands.filter(d=>d.status==='Resolvida').length;
   const today=new Date().toISOString().slice(0,10);
   const todayCount=state.demands.filter(d=>String(d.created_at).slice(0,10)===today).length;
-  panel.innerHTML=`<div class="cards"><div class="metric"><strong>${total}</strong><span>Total de demandas</span></div><div class="metric"><strong>${todayCount}</strong><span>Recebidas hoje</span></div><div class="metric"><strong>${open}</strong><span>Em aberto</span></div><div class="metric"><strong>${resolved}</strong><span>Resolvidas</span></div></div><div class="dashboard-actions"><button class="primary" id="quickReport">Gerar relatório</button></div><div class="section-label">Últimas demandas</div>${demandTable(state.demands.slice(0,8))}`;
+  panel.innerHTML=loadWarning+`<div class="cards"><div class="metric"><strong>${total}</strong><span>Total de demandas</span></div><div class="metric"><strong>${todayCount}</strong><span>Recebidas hoje</span></div><div class="metric"><strong>${open}</strong><span>Em aberto</span></div><div class="metric"><strong>${resolved}</strong><span>Resolvidas</span></div></div><div class="dashboard-actions"><button class="primary" id="quickReport">Gerar relatório</button></div><div class="section-label">Últimas demandas</div>${demandTable(state.demands.slice(0,8))}`;
   $('#quickReport')?.addEventListener('click',()=>showPage('reports'));
   bindDemandButtons();
 }

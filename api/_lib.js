@@ -16,6 +16,12 @@ function json(res, status, body) {
   res.status(status).json(body);
 }
 
+function publicKey() {
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  if (!key) throw new Error('Variável de ambiente ausente: SUPABASE_PUBLISHABLE_KEY (ou SUPABASE_ANON_KEY)');
+  return key;
+}
+
 function secretKey() {
   const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) throw new Error('Variável de ambiente ausente: SUPABASE_SECRET_KEY');
@@ -53,7 +59,7 @@ async function getAuthUser(req) {
   if (!auth.startsWith('Bearer ')) return null;
   const token = auth.slice(7);
   const response = await fetch(`${env('SUPABASE_URL')}/auth/v1/user`, {
-    headers: { apikey: env('SUPABASE_PUBLISHABLE_KEY'), Authorization: `Bearer ${token}` }
+    headers: { apikey: publicKey(), Authorization: `Bearer ${token}` }
   });
   if (!response.ok) return null;
   return response.json();
@@ -66,4 +72,4 @@ async function requireAdmin(req) {
   return rows?.length ? { user, admin: rows[0] } : null;
 }
 
-module.exports = { env, cors, json, db, makeProtocol, getAuthUser, requireAdmin, secretKey };
+module.exports = { env, cors, json, db, makeProtocol, getAuthUser, requireAdmin, secretKey, publicKey };

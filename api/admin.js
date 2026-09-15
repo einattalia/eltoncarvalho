@@ -7,8 +7,12 @@ module.exports = async function handler(req, res) {
     if (!access) return json(res, 401, { error: 'Acesso administrativo não autorizado.' });
     const action = (req.query?.action || req.body?.action || '').toString();
 
+    if (req.method === 'GET' && action === 'ping') {
+      return json(res, 200, { ok: true, user: { id: access.user.id, email: access.user.email || access.admin.email || '' } });
+    }
+
     if (req.method === 'GET' && action === 'demands') {
-      const rows = await db('demands?select=id,protocol,created_at,updated_at,resolved_at,kind,name,phone,category,neighborhood,address,ouvidoria_protocol,message,attachments,status,priority,internal_notes,email_notified,whatsapp_notified&order=created_at.desc&limit=500');
+      const rows = await db('demands?select=*&order=created_at.desc&limit=500');
       return json(res, 200, { demands: rows || [] });
     }
     if (req.method === 'GET' && action === 'content') {
