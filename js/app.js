@@ -127,26 +127,47 @@ document.addEventListener('DOMContentLoaded', () => {
 // v14 — contadores legislativos sincronizados com a Câmara Municipal
 (() => {
   function formatPt(value){ return Number(value || 0).toLocaleString('pt-BR'); }
+  function setIndicatorVisibility(el, target){
+    if(!el) return false;
+    const card=el.closest('article');
+    const visible=Number(target || 0) > 0;
+    if(card){
+      card.hidden=!visible;
+      card.setAttribute('aria-hidden', String(!visible));
+    }
+    return visible;
+  }
   function animateCounter(el, target){
     if(!el) return;
     target = Math.max(0, Number(target || 0));
+    el.textContent='0';
+    if(target <= 0) return;
     if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){ el.textContent=formatPt(target); return; }
-    const start=performance.now(), duration=1100;
+    if(el._counterFrame) cancelAnimationFrame(el._counterFrame);
+    const duration=1800;
+    const start=performance.now();
     function frame(now){
-      const p=Math.min(1,(now-start)/duration), eased=1-Math.pow(1-p,3);
+      const p=Math.min(1,(now-start)/duration);
+      const eased=1-Math.pow(1-p,4);
       el.textContent=formatPt(Math.round(target*eased));
-      if(p<1) requestAnimationFrame(frame);
+      if(p<1) el._counterFrame=requestAnimationFrame(frame);
+      else { el.textContent=formatPt(target); el._counterFrame=null; }
     }
-    requestAnimationFrame(frame);
+    el._counterFrame=requestAnimationFrame(frame);
   }
   async function loadLegislativeStats(){
     try{
       const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});
       if(!r.ok) throw new Error('indisponível');
       const data=await r.json(), stats=data.stats||{};
-      animateCounter(document.getElementById('counterProjects'),stats.projects);
-      animateCounter(document.getElementById('counterRequirements'),stats.requirements);
-      animateCounter(document.getElementById('counterOffices'),stats.offices);
+      const indicators=[
+        [document.getElementById('counterProjects'),stats.projects],
+        [document.getElementById('counterRequirements'),stats.requirements],
+        [document.getElementById('counterOffices'),stats.offices]
+      ];
+      indicators.forEach(([el,value])=>{
+        if(setIndicatorVisibility(el,value)) animateCounter(el,value);
+      });
       animateCounter(document.getElementById('heroLegislativeTotal'),stats.total);
       const updated=document.getElementById('legislativeUpdated');
       if(updated && data.lastSynced){ updated.textContent=`Última atualização: ${new Date(data.lastSynced).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`; }

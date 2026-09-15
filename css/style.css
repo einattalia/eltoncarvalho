@@ -138,7 +138,8 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 .tabs .animal-demand-tab.active{background:#D92D20;color:#fff;border-color:#D92D20;box-shadow:0 6px 18px rgba(217,45,32,.28)}
 
 /* v14 — contadores legislativos oficiais */
-.legislative-numbers-grid{grid-template-columns:repeat(5,1fr)}
+.legislative-numbers-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.legislative-numbers-grid>article[hidden]{display:none!important}
 .official-counter{position:relative;overflow:hidden}
 .official-counter:before{content:"OFICIAL";position:absolute;right:14px;top:12px;font-size:8px;letter-spacing:.12em;font-weight:800;color:rgba(255,255,255,.55)}
 .legislative-source{display:flex;align-items:center;gap:10px;margin-top:18px;padding:14px 16px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.06);font-size:11px;color:#DCE5FF}
