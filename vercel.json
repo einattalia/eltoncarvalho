@@ -20,11 +20,5 @@
         }
       ]
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/camara-sync",
-      "schedule": "0 9  * * *"
-    }
   ]
 }
