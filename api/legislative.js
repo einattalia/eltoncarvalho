@@ -1,105 +1,108 @@
 const { cors, json, db, requireAdmin } = require('./_lib');
 
-const CHAMBER_PROFILE = 'https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe';
+const SOURCES = {
+  projects: 'https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=documento&tipo=15',
+  requirements: 'https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=documento&tipo=30'
+};
+const CHAMBER_PROFILE = 'https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=detalhe';
 
 function cleanNumber(value) {
   const n = Number(String(value ?? '').replace(/\D/g, ''));
   return Number.isFinite(n) ? n : 0;
 }
-
-function parseProfile(html) {
-  const normalized = html.replace(/&nbsp;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-  const pick = (label) => {
-    const re = new RegExp(`${label}\\s*(\\d[\\d.]*)`, 'i');
-    const m = normalized.match(re);
-    return m ? cleanNumber(m[1]) : 0;
-  };
-  return {
-    projects: pick('Projeto de Lei Ordinária'),
-    requirements: pick('Requerimento')
-  };
+function parseResultCount(html, label) {
+  const text = String(html || '').replace(/&nbsp;/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  const match = text.match(/Foram encontrados\s*([\d.]+)\s*resultados/i);
+  if (!match) throw new Error(`Não foi possível identificar o total de ${label} no portal da Câmara.`);
+  return cleanNumber(match[1]);
 }
-
 async function fetchHtml(url) {
-  const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 EltonCarvalhoSite/1.0', Accept: 'text/html' } });
-  if (!response.ok) throw new Error(`Câmara respondeu ${response.status}`);
+  const response = await fetch(url, {
+    headers: { 'User-Agent': 'Mozilla/5.0 EltonCarvalhoSite/2.0', Accept: 'text/html,application/xhtml+xml' }
+  });
+  if (!response.ok) throw new Error(`Câmara respondeu HTTP ${response.status}`);
   return response.text();
 }
-
 async function liveStats() {
-  const html = await fetchHtml(CHAMBER_PROFILE);
-  const base = parseProfile(html);
-  let offices = null;
-  const officeUrl = process.env.CAMARA_OFICIOS_URL || '';
-  if (officeUrl) {
-    try {
-      const officeHtml = await fetchHtml(officeUrl);
-      const text = officeHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-      const m = text.match(/Foram encontrados\s*([\d.]+)\s*resultados/i);
-      offices = m ? cleanNumber(m[1]) : null;
-    } catch (_) { offices = null; }
-  }
-  return { ...base, offices, source_url: CHAMBER_PROFILE, checked_at: new Date().toISOString() };
+  const [projectsHtml, requirementsHtml] = await Promise.all([
+    fetchHtml(SOURCES.projects), fetchHtml(SOURCES.requirements)
+  ]);
+  return {
+    projects: parseResultCount(projectsHtml, 'Projetos de Lei'),
+    requirements: parseResultCount(requirementsHtml, 'Requerimentos'),
+    checked_at: new Date().toISOString()
+  };
 }
-
 async function cachedStats() {
   try {
     const rows = await db('legislative_stats?select=stat_key,stat_value,source_mode,source_url,last_synced_at&order=stat_key.asc');
     return Object.fromEntries((rows || []).map(r => [r.stat_key, r]));
   } catch (_) { return {}; }
 }
-
-async function saveStat(key, value, mode, url) {
+async function saveStat(key, value, mode, url, syncedAt = new Date().toISOString()) {
   await db('legislative_stats?on_conflict=stat_key', {
     method: 'POST',
     headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({ stat_key: key, stat_value: Number(value || 0), source_mode: mode, source_url: url || null, last_synced_at: new Date().toISOString() })
+    body: JSON.stringify({ stat_key: key, stat_value: Number(value || 0), source_mode: mode, source_url: url || null, last_synced_at: syncedAt, updated_at: syncedAt })
   });
 }
+async function persistLive(live) {
+  await Promise.all([
+    saveStat('projects', live.projects, 'automatic', SOURCES.projects, live.checked_at),
+    saveStat('requirements', live.requirements, 'automatic', SOURCES.requirements, live.checked_at)
+  ]);
+  return live;
+}
+function payload(cache, extra = {}) {
+  const projects = Number(cache.projects?.stat_value || 0);
+  const requirements = Number(cache.requirements?.stat_value || 0);
+  const offices = Number(cache.offices?.stat_value || 0);
+  const dates = [cache.projects?.last_synced_at, cache.requirements?.last_synced_at].filter(Boolean).sort();
+  return {
+    stats: { projects, requirements, offices, total: projects + requirements + offices },
+    lastSynced: dates.at(-1) || null,
+    chamberUrl: CHAMBER_PROFILE,
+    sources: SOURCES,
+    officesAutomatic: cache.offices?.source_mode === 'automatic',
+    ...extra
+  };
+}
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   cors(res, 'GET,POST,PUT,OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
   try {
     if (req.method === 'GET') {
-      const cache = await cachedStats();
-      let live = null;
+      let cache = await cachedStats();
       if (!cache.projects || !cache.requirements) {
-        try { live = await liveStats(); } catch (_) {}
+        try { await persistLive(await liveStats()); cache = await cachedStats(); }
+        catch (error) { return json(res, 200, payload(cache, { sourceStatus: 'cache', sourceError: error.message })); }
       }
-      const projects = cache.projects?.stat_value ?? live?.projects ?? 0;
-      const requirements = cache.requirements?.stat_value ?? live?.requirements ?? 0;
-      const offices = cache.offices?.stat_value ?? live?.offices ?? 0;
-      const lastSynced = cache.projects?.last_synced_at || cache.requirements?.last_synced_at || live?.checked_at || null;
-      return json(res, 200, {
-        stats: { projects, requirements, offices, total: projects + requirements + offices },
-        lastSynced,
-        chamberUrl: CHAMBER_PROFILE,
-        officesAutomatic: cache.offices?.source_mode === 'automatic' || Boolean(live?.offices)
-      });
+      return json(res, 200, payload(cache, { sourceStatus: 'cache' }));
     }
 
     const access = await requireAdmin(req);
     if (!access) return json(res, 401, { error: 'Acesso administrativo não autorizado.' });
 
     if (req.method === 'POST') {
-      const live = await liveStats();
-      await saveStat('projects', live.projects, 'automatic', CHAMBER_PROFILE);
-      await saveStat('requirements', live.requirements, 'automatic', CHAMBER_PROFILE);
-      if (live.offices !== null) await saveStat('offices', live.offices, 'automatic', process.env.CAMARA_OFICIOS_URL);
+      const live = await persistLive(await liveStats());
       const cache = await cachedStats();
-      return json(res, 200, { ok: true, live, officesAutomatic: cache.offices?.source_mode === 'automatic' });
+      return json(res, 200, payload(cache, { ok: true, sourceStatus: 'live', checkedAt: live.checked_at }));
     }
-
     if (req.method === 'PUT') {
       const value = cleanNumber(req.body?.offices);
       await saveStat('offices', value, 'manual', null);
-      return json(res, 200, { ok: true, offices: value });
+      const cache = await cachedStats();
+      return json(res, 200, payload(cache, { ok: true }));
     }
-
     return json(res, 405, { error: 'Método não permitido.' });
   } catch (error) {
-    console.error(error);
+    console.error('[legislative]', error);
     return json(res, 500, { error: error.message || 'Falha ao consultar os dados legislativos.' });
   }
-};
+}
+handler.liveStats = liveStats;
+handler.persistLive = persistLive;
+handler.cachedStats = cachedStats;
+handler.SOURCES = SOURCES;
+module.exports = handler;

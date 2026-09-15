@@ -313,7 +313,3 @@ tbody tr.animal-demand .open-btn{background:#fff;border-color:rgba(255,255,255,.
 .integration-card small{font-size:9px;letter-spacing:.12em;color:var(--muted);font-weight:700}.integration-card h3{margin:4px 0 8px}.integration-card p,.office-setting p{font-size:11px;line-height:1.6;color:var(--muted);max-width:720px}.integration-card a{font-size:11px;font-weight:700;color:var(--blue)}.integration-status{font-size:10px;font-weight:700;color:#16803c;background:#edf9f1;padding:8px 10px;border-radius:999px;white-space:nowrap}.office-setting label{font-size:10px;font-weight:700;min-width:180px}.office-setting input{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:inherit}.office-setting .primary{align-self:flex-end;white-space:nowrap}
 @media(max-width:900px){.legislative-admin-cards{grid-template-columns:repeat(2,1fr)}.integration-card,.office-setting{flex-direction:column}.office-setting label{width:100%}.office-setting .primary{align-self:stretch}}
 @media(max-width:520px){.legislative-admin-cards{grid-template-columns:1fr}}
-
-
-/* v15.1 — diagnóstico resiliente do Admin */
-.admin-load-warning{margin:0 0 18px;padding:16px 18px;border:1px solid #e6b85c;border-radius:14px;background:#fff8e8;color:#5d4315}.admin-load-warning strong{display:block;margin-bottom:8px}.admin-load-warning ul{margin:8px 0 8px 20px}.admin-load-warning p{margin:0;font-size:13px;opacity:.85}

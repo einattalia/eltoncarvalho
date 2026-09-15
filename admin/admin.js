@@ -1,4 +1,4 @@
-const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [], legislative: null, loadErrors: [] };
+const state = { config: null, token: localStorage.getItem('ec_admin_token') || '', user: null, demands: [], content: [], legislative: null };
 const $ = (s) => document.querySelector(s);
 const loginView = $('#loginView'), appView = $('#appView'), panel = $('#panel'), pageTitle = $('#pageTitle');
 
@@ -10,18 +10,7 @@ $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#login
 $('#logoutBtn').addEventListener('click',logout);
 document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
 
-async function boot(){
-  try{
-    await api('ping');
-    state.loadErrors=[];
-    const jobs=[['Demandas',loadDemands],['Conteúdo do site',loadContent],['Dados da Câmara',loadLegislative]];
-    const results=await Promise.allSettled(jobs.map(([,fn])=>fn()));
-    results.forEach((r,i)=>{if(r.status==='rejected') state.loadErrors.push(`${jobs[i][0]}: ${r.reason?.message||'falha ao carregar'}`);});
-    loginView.hidden=true; appView.hidden=false; $('#loginFeedback').textContent=''; showPage('dashboard');
-  }catch(err){
-    if(state.token) $('#loginFeedback').textContent=err.message; else logout();
-  }
-}
+async function boot(){ try{ await Promise.all([loadDemands(),loadContent(),loadLegislative()]); loginView.hidden=true;appView.hidden=false;showPage('dashboard'); }catch(err){ if(state.token) $('#loginFeedback').textContent=err.message; else logout(); } }
 async function loadDemands(){state.demands=(await api('demands')).demands||[];}
 async function loadContent(){state.content=(await api('content')).content||[];}
 async function loadLegislative(){try{const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});state.legislative=r.ok?await r.json():null;}catch(_){state.legislative=null;}}
@@ -33,13 +22,12 @@ function showPage(page){activate(page);if(page==='dashboard')renderDashboard();i
 
 function renderDashboard(){
   pageTitle.textContent='Visão geral';
-  const loadWarning=state.loadErrors.length?`<div class="admin-load-warning"><strong>Painel aberto, mas há módulos que precisam de atenção:</strong><ul>${state.loadErrors.map(e=>`<li>${esc(e)}</li>`).join('')}</ul><p>O restante do Admin continua disponível. Verifique as migrações do Supabase e as variáveis da Vercel.</p></div>`:'';
   const total=state.demands.length;
   const open=state.demands.filter(d=>!['Resolvida','Arquivada'].includes(d.status)).length;
   const resolved=state.demands.filter(d=>d.status==='Resolvida').length;
   const today=new Date().toISOString().slice(0,10);
   const todayCount=state.demands.filter(d=>String(d.created_at).slice(0,10)===today).length;
-  panel.innerHTML=loadWarning+`<div class="cards"><div class="metric"><strong>${total}</strong><span>Total de demandas</span></div><div class="metric"><strong>${todayCount}</strong><span>Recebidas hoje</span></div><div class="metric"><strong>${open}</strong><span>Em aberto</span></div><div class="metric"><strong>${resolved}</strong><span>Resolvidas</span></div></div><div class="dashboard-actions"><button class="primary" id="quickReport">Gerar relatório</button></div><div class="section-label">Últimas demandas</div>${demandTable(state.demands.slice(0,8))}`;
+  panel.innerHTML=`<div class="cards"><div class="metric"><strong>${total}</strong><span>Total de demandas</span></div><div class="metric"><strong>${todayCount}</strong><span>Recebidas hoje</span></div><div class="metric"><strong>${open}</strong><span>Em aberto</span></div><div class="metric"><strong>${resolved}</strong><span>Resolvidas</span></div></div><div class="dashboard-actions"><button class="primary" id="quickReport">Gerar relatório</button></div><div class="section-label">Últimas demandas</div>${demandTable(state.demands.slice(0,8))}`;
   $('#quickReport')?.addEventListener('click',()=>showPage('reports'));
   bindDemandButtons();
 }
@@ -150,7 +138,7 @@ function renderLegislative(){
   const updated=d.lastSynced?new Date(d.lastSynced).toLocaleString('pt-BR'):'Ainda não sincronizado';
   panel.innerHTML=`<div class="toolbar"><div><strong>Produção legislativa oficial</strong><span>Contadores vinculados ao perfil de Elton Carvalho na Câmara Municipal de São Carlos.</span></div><button class="primary" id="syncChamber">Sincronizar agora</button></div>
   <div class="cards legislative-admin-cards"><div class="metric"><strong>${legislativeNumber(s.projects)}</strong><span>Projetos de Lei apresentados</span></div><div class="metric"><strong>${legislativeNumber(s.requirements)}</strong><span>Requerimentos apresentados</span></div><div class="metric"><strong>${legislativeNumber(s.offices)}</strong><span>Ofícios encaminhados</span></div><div class="metric"><strong>${legislativeNumber(s.total)}</strong><span>Total exibido no site</span></div></div>
-  <div class="integration-card"><div><small>FONTE OFICIAL</small><h3>Câmara Municipal de São Carlos</h3><p>Projetos de Lei e Requerimentos são lidos automaticamente da área de Legislação do perfil do vereador.</p><p><b>Última sincronização:</b> ${esc(updated)}</p><a href="${esc(d.chamberUrl||'https://camarasaocarlos.sp.gov.br/vereador/?a=legislacao&id=176&p=detalhe')}" target="_blank" rel="noopener">Abrir perfil oficial ↗</a></div><span class="integration-status">● Conectado</span></div>
+  <div class="integration-card"><div><small>FONTE OFICIAL</small><h3>Câmara Municipal de São Carlos</h3><p>Projetos de Lei e Requerimentos são lidos das listagens oficiais de publicações de Elton Carvalho no portal da Câmara.</p><p><b>Última sincronização:</b> ${esc(updated)}</p><a href="${esc(d.chamberUrl||'https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=detalhe')}" target="_blank" rel="noopener">Abrir perfil oficial ↗</a></div><span class="integration-status">● Conectado</span></div>
   <div class="section-label">Ofícios</div><div class="office-setting"><div><strong>${d.officesAutomatic?'Sincronização automática ativa':'Acompanhamento pelo gabinete'}</strong><p>${d.officesAutomatic?'A fonte oficial configurada permite atualizar este contador automaticamente.':'O portal da Câmara não apresenta hoje uma categoria própria de Ofícios no perfil do vereador. Informe o total oficial abaixo; ele permanecerá separado dos Requerimentos.'}</p></div><label>Total oficial de ofícios<input id="officeCount" type="number" min="0" step="1" value="${Number(s.offices||0)}"></label><button class="primary" id="saveOffices">Salvar total</button></div>`;
   $('#syncChamber')?.addEventListener('click',async()=>{const b=$('#syncChamber');b.disabled=true;b.textContent='Sincronizando…';try{await legislativeRequest('POST');await loadLegislative();renderLegislative();}catch(err){alert(err.message);b.disabled=false;b.textContent='Sincronizar agora';}});
   $('#saveOffices')?.addEventListener('click',async()=>{const b=$('#saveOffices');b.disabled=true;b.textContent='Salvando…';try{await legislativeRequest('PUT',{offices:$('#officeCount').value});await loadLegislative();renderLegislative();}catch(err){alert(err.message);b.disabled=false;b.textContent='Salvar total';}});

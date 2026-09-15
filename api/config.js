@@ -1,4 +1,4 @@
-const { env, cors, json, publicKey } = require('./_lib');
+const { env, cors, json } = require('./_lib');
 module.exports = async function handler(req, res) {
   cors(res, 'GET,OPTIONS');
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
   try {
     return json(res, 200, {
       supabaseUrl: env('SUPABASE_URL'),
-      supabasePublishableKey: publicKey(),
+      supabasePublishableKey: env('SUPABASE_PUBLISHABLE_KEY'),
       demandBucket: process.env.SUPABASE_DEMAND_BUCKET || 'demand-attachments',
       siteMediaBucket: process.env.SUPABASE_SITE_MEDIA_BUCKET || 'site-media'
     });
