@@ -124,59 +124,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// v14 — contadores legislativos sincronizados com a Câmara Municipal
+// v18 — contadores: reiniciam em zero em todo carregamento da página
 (() => {
   function formatPt(value){ return Number(value || 0).toLocaleString('pt-BR'); }
   function setIndicatorVisibility(el, target){
     if(!el) return false;
     const card=el.closest('article');
     const visible=Number(target || 0) > 0;
-    if(card){
-      card.hidden=!visible;
-      card.setAttribute('aria-hidden', String(!visible));
-    }
+    if(card){ card.hidden=!visible; card.setAttribute('aria-hidden', String(!visible)); }
     return visible;
   }
-  function animateCounter(el, target){
+  function animateCounter(el, target, options={}){
     if(!el) return;
-    target = Math.max(0, Number(target || 0));
-    el.textContent='0';
-    if(target <= 0) return;
-    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){ el.textContent=formatPt(target); return; }
+    target=Math.max(0,Number(target||0));
+    const prefix=options.prefix ?? el.dataset.counterPrefix ?? '';
+    const suffix=options.suffix ?? el.dataset.counterSuffix ?? '';
+    const render=n=>`${prefix}${formatPt(n)}${suffix}`;
     if(el._counterFrame) cancelAnimationFrame(el._counterFrame);
-    const duration=1800;
-    const start=performance.now();
-    function frame(now){
-      const p=Math.min(1,(now-start)/duration);
-      const eased=1-Math.pow(1-p,4);
-      el.textContent=formatPt(Math.round(target*eased));
-      if(p<1) el._counterFrame=requestAnimationFrame(frame);
-      else { el.textContent=formatPt(target); el._counterFrame=null; }
-    }
-    el._counterFrame=requestAnimationFrame(frame);
+    el.textContent=render(0);
+    // Duplo RAF força o navegador a pintar o zero antes do primeiro avanço.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      const duration=1900, start=performance.now();
+      function frame(now){
+        const p=Math.min(1,(now-start)/duration);
+        const eased=1-Math.pow(1-p,4);
+        el.textContent=render(Math.round(target*eased));
+        if(p<1) el._counterFrame=requestAnimationFrame(frame);
+        else { el.textContent=render(target); el._counterFrame=null; }
+      }
+      el._counterFrame=requestAnimationFrame(frame);
+    }));
+  }
+  function animateStaticCounters(){
+    document.querySelectorAll('[data-static-counter]').forEach(el=>animateCounter(el,el.dataset.staticCounter));
   }
   async function loadLegislativeStats(){
+    // Garante estado inicial zero mesmo antes da resposta da API.
+    ['counterProjects','counterRequirements','counterOffices','heroLegislativeTotal'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.textContent='0';
+    });
     try{
-      const r=await fetch('/api/legislative',{headers:{Accept:'application/json'}});
+      const r=await fetch('/api/legislative',{headers:{Accept:'application/json'},cache:'no-store'});
       if(!r.ok) throw new Error('indisponível');
       const data=await r.json(), stats=data.stats||{};
-      const indicators=[
-        [document.getElementById('counterProjects'),stats.projects],
-        [document.getElementById('counterRequirements'),stats.requirements],
-        [document.getElementById('counterOffices'),stats.offices]
-      ];
-      indicators.forEach(([el,value])=>{
+      [[document.getElementById('counterProjects'),stats.projects],[document.getElementById('counterRequirements'),stats.requirements],[document.getElementById('counterOffices'),stats.offices]].forEach(([el,value])=>{
         if(setIndicatorVisibility(el,value)) animateCounter(el,value);
       });
       animateCounter(document.getElementById('heroLegislativeTotal'),stats.total);
       const updated=document.getElementById('legislativeUpdated');
-      if(updated && data.lastSynced){ updated.textContent=`Última atualização: ${new Date(data.lastSynced).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`; }
+      if(updated&&data.lastSynced) updated.textContent=`Última atualização: ${new Date(data.lastSynced).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`;
       const officeNote=document.getElementById('officesCounterNote');
-      if(officeNote && !data.officesAutomatic) officeNote.textContent='Valor acompanhado pelo gabinete até existir uma listagem oficial própria de ofícios no portal da Câmara.';
+      if(officeNote&&!data.officesAutomatic) officeNote.textContent='Valor acompanhado pelo gabinete até existir uma listagem oficial própria de ofícios no portal da Câmara.';
     }catch(_){
       const updated=document.getElementById('legislativeUpdated');
       if(updated) updated.textContent='Sincronização temporariamente indisponível.';
     }
   }
-  document.addEventListener('DOMContentLoaded',loadLegislativeStats);
+  function init(){ animateStaticCounters(); loadLegislativeStats(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();

@@ -161,3 +161,7 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 .instagram-open-profile svg{width:15px;height:15px}
 @media(max-width:1000px){.news-grid-editorial{grid-template-columns:1fr}.latest-updates-column{grid-template-columns:repeat(2,minmax(0,1fr))}.instagram-feed-compact{grid-column:auto!important}.instagram-profile-head{grid-template-columns:64px minmax(0,1fr) 34px}.instagram-profile-photo{width:64px;height:64px}}
 @media(max-width:680px){.news-grid-editorial,.latest-updates-column{grid-template-columns:1fr}.instagram-profile-head{grid-template-columns:58px minmax(0,1fr) 34px}.instagram-profile-photo{width:58px;height:58px}.instagram-profile-copy h3{font-size:23px}}
+
+/* v18 — mapa alimentado por demandas solucionadas */
+.map-empty{padding:18px;border:1px dashed rgba(255,255,255,.2);border-radius:14px;color:#c7d3f4;font-size:10px;line-height:1.6;text-align:center}
+.map-info ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:7px}.map-info li{padding-top:7px;border-top:1px solid #e8ebf0}.map-info li b,.map-info li span{display:block}.map-info li b{font-size:10px}.map-info li span{font-size:9px;color:#687790;margin-top:2px}

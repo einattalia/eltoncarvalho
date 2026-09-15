@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
   <script src="js/content.js" defer></script>
-  <script src="js/app.js?v=17.1-counters" defer></script>
+  <script src="js/app.js?v=18-solutions" defer></script>
   <script src="js/instagram.js" defer></script>
 </head>
 <body>
@@ -85,8 +85,8 @@
       <article class="official-counter"><strong id="counterProjects" data-counter="0">0</strong><span>Projetos de Lei apresentados</span><p>Proposições de autoria de Elton Carvalho registradas oficialmente pela Câmara.</p></article>
       <article class="official-counter"><strong id="counterRequirements" data-counter="0">0</strong><span>Requerimentos apresentados</span><p>Requerimentos vinculados ao perfil oficial do vereador na Câmara Municipal.</p></article>
       <article class="official-counter"><strong id="counterOffices" data-counter="0">0</strong><span>Ofícios encaminhados</span><p id="officesCounterNote">Contagem vinculada à fonte oficial configurada no painel.</p></article>
-      <article><strong data-content-key="numbers.resources">+ R$ 4 mi</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
-      <article><strong data-content-key="numbers.protocols">+ 600</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
+      <article><strong id="counterResources" data-content-key="numbers.resources" data-static-counter="4" data-counter-prefix="+ R$ " data-counter-suffix=" mi">0</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
+      <article><strong id="counterProtocols" data-content-key="numbers.protocols" data-static-counter="600" data-counter-prefix="+ ">0</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
     </div>
     <div class="legislative-source"><i data-lucide="landmark"></i><span>Dados legislativos sincronizados com a Câmara Municipal de São Carlos. <small id="legislativeUpdated">Aguardando sincronização.</small></span><a href="https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=detalhe" target="_blank" rel="noopener">Ver fonte oficial ↗</a></div>
   </div>
@@ -106,17 +106,14 @@
 
 <section class="section map-section" id="mapa">
   <div class="container">
-    <div class="section-heading inverse map-heading"><div><span class="section-kicker">Interativo</span><h2>MAPA DE ATUAÇÃO.</h2></div><p>Filtre por região e conheça alguns dos locais onde o mandato esteve presente em São Carlos.</p></div>
-    <div class="map-region-filters" role="group" aria-label="Filtrar ações por região">
-      <button class="map-filter active" type="button" data-map-filter="Todos">Todos</button><button class="map-filter" type="button" data-map-filter="Norte">Norte</button><button class="map-filter" type="button" data-map-filter="Sul">Sul</button><button class="map-filter" type="button" data-map-filter="Leste">Leste</button><button class="map-filter" type="button" data-map-filter="Oeste">Oeste</button><button class="map-filter" type="button" data-map-filter="Centro">Centro</button>
-    </div>
+    <div class="section-heading inverse map-heading"><div><span class="section-kicker">Resultados nos bairros</span><h2>MAPA DE SOLUÇÕES.</h2></div><p>O mapa acompanha as demandas solucionadas pelo gabinete e organiza os resultados por bairro, sem expor dados pessoais ou endereços dos moradores.</p></div>
     <div class="map-layout">
       <div class="map-card">
         <div class="map-topbar"><span><i data-lucide="map-pin"></i> São Carlos — SP</span><a href="https://www.google.com/maps/search/?api=1&query=S%C3%A3o+Carlos%2C+SP" target="_blank" rel="noopener">Abrir no Google Maps <i data-lucide="external-link"></i></a></div>
         <div class="map-frame"><div id="googleMap" class="google-map-canvas" aria-label="Mapa das ações do mandato em São Carlos"></div><div id="mapFallback" class="map-fallback" hidden><iframe src="https://www.google.com/maps?q=S%C3%A3o%20Carlos%2C%20SP&z=12&output=embed" title="Mapa de São Carlos no Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div></div>
       </div>
       <aside class="map-panel">
-        <span class="section-kicker">Ações da região</span><h3 id="mapPanelTitle">São Carlos inteira.</h3><p id="mapPanelText">Selecione uma região ou clique em um marcador para conhecer algumas ações realizadas pelo mandato.</p><div class="map-action-list" id="mapActionList" aria-live="polite"></div><a class="button button-yellow full" href="#gabinete"><i data-lucide="message-circle"></i> Enviar uma demanda</a>
+        <span class="section-kicker">Demandas solucionadas</span><h3 id="mapPanelTitle">Resultados do mandato.</h3><p id="mapPanelText">As soluções registradas no painel administrativo aparecerão aqui automaticamente.</p><div class="map-action-list" id="mapActionList" aria-live="polite"><div class="map-empty">Carregando soluções…</div></div><a class="button button-yellow full" href="#gabinete"><i data-lucide="message-circle"></i> Enviar uma demanda</a>
       </aside>
     </div>
   </div>
@@ -207,6 +204,6 @@
 
 <footer><div class="container footer-grid"><div><img class="footer-logo" src="assets/brand/logo-white.png" alt="Elton Carvalho Vereador"><p data-content-key="footer.text">Mandato presente, transparente e conectado com São Carlos.</p></div><div><strong>Navegação</strong><a href="#sobre">Sobre</a><a href="#atuacao">Atuação</a><a href="#mapa">Mapa</a><a href="#gabinete">Gabinete Digital</a></div><div><strong>Contato</strong><a href="https://wa.me/5516992934352" target="_blank" rel="noopener">(16) 99293-4352</a><a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">@eltoncarvalho10192</a><span>São Carlos • SP</span><span class="candidate-cnpj">CNPJ CANDIDATO: 68.462.006/0001-14<br>Elton Carvalho Porto</span></div></div></footer>
 <div class="footer-pattern" aria-hidden="true"></div>
-<script src="js/maps-config.js"></script><script src="js/map-actions.js"></script>
+<script src="js/maps-config.js"></script><script src="js/map-actions.js?v=18-solutions"></script>
 </body>
 </html>
