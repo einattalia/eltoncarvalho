@@ -24,6 +24,18 @@ module.exports = async function handler(req, res) {
       return json(res, 502, { error: 'Não foi possível carregar o Instagram.' });
     }
 
+    let profile = null;
+    try {
+      const profileUrl = new URL(`https://graph.instagram.com/${version}/${encodeURIComponent(userId)}`);
+      profileUrl.searchParams.set('fields', 'id,username,profile_picture_url');
+      profileUrl.searchParams.set('access_token', token);
+      const profileResponse = await fetch(profileUrl.toString(), { headers: { Accept: 'application/json' } });
+      if (profileResponse.ok) {
+        const rawProfile = await profileResponse.json();
+        profile = { username: rawProfile.username || '', profile_picture_url: rawProfile.profile_picture_url || '' };
+      }
+    } catch (_) {}
+
     const data = Array.isArray(payload.data) ? payload.data.map(post => ({
       id: post.id,
       caption: post.caption || '',
@@ -36,7 +48,7 @@ module.exports = async function handler(req, res) {
     })) : [];
 
     res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
-    return json(res, 200, { data });
+    return json(res, 200, { data, profile });
   } catch (error) {
     console.error('Instagram request failed', error);
     return json(res, 502, { error: 'Não foi possível carregar o Instagram.' });

@@ -158,6 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function animateStaticCounters(){
     document.querySelectorAll('[data-static-counter]').forEach(el=>animateCounter(el,el.dataset.staticCounter));
   }
+  let chamberStatsForOpenSection=null;
+  let openSectionAnimated=false;
+  function animateOpenSectionCounters(){
+    if(openSectionAnimated||!chamberStatsForOpenSection)return;
+    openSectionAnimated=true;
+    animateCounter(document.getElementById('openProjects'),chamberStatsForOpenSection.projects);
+    animateCounter(document.getElementById('openRequirements'),chamberStatsForOpenSection.requirements);
+  }
+  function watchOpenSection(){
+    const section=document.querySelector('.transparency-section');
+    if(!section)return;
+    const io=new IntersectionObserver(entries=>{
+      if(entries.some(e=>e.isIntersecting)){ animateOpenSectionCounters(); if(openSectionAnimated)io.disconnect(); }
+    },{threshold:.28});
+    io.observe(section);
+  }
   async function loadLegislativeStats(){
     // Garante estado inicial zero mesmo antes da resposta da API.
     ['counterProjects','counterRequirements','counterOffices','heroLegislativeTotal'].forEach(id=>{
@@ -166,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try{
       const r=await fetch('/api/legislative',{headers:{Accept:'application/json'},cache:'no-store'});
       if(!r.ok) throw new Error('indisponível');
-      const data=await r.json(), stats=data.stats||{};
+      const data=await r.json(), stats=data.stats||{}; chamberStatsForOpenSection=stats; if(document.querySelector('.transparency-section')?.getBoundingClientRect().top < innerHeight*.9) animateOpenSectionCounters();
       [[document.getElementById('counterProjects'),stats.projects],[document.getElementById('counterRequirements'),stats.requirements],[document.getElementById('counterOffices'),stats.offices]].forEach(([el,value])=>{
         if(setIndicatorVisibility(el,value)) animateCounter(el,value);
       });
@@ -180,6 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if(updated) updated.textContent='Sincronização temporariamente indisponível.';
     }
   }
-  function init(){ animateStaticCounters(); loadLegislativeStats(); }
+  function init(){ animateStaticCounters(); watchOpenSection(); loadLegislativeStats(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
 })();

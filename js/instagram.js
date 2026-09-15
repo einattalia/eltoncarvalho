@@ -99,6 +99,8 @@
     try{
       const response = await fetch('/api/instagram', {headers:{Accept:'application/json'}});
       const data = await response.json().catch(()=>({}));
+      const profilePhoto=document.getElementById('instagramProfilePhoto');
+      if(profilePhoto && data.profile?.profile_picture_url) profilePhoto.src=data.profile.profile_picture_url;
       if(!response.ok) throw new Error(data.error || 'Instagram indisponível');
       items = Array.isArray(data.data) ? data.data.filter(p=>p && p.permalink) : [];
       if(!items.length) throw new Error('Nenhuma publicação encontrada');

@@ -165,3 +165,15 @@ footer{padding:42px 0}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-lo
 /* v18 — mapa alimentado por demandas solucionadas */
 .map-empty{padding:18px;border:1px dashed rgba(255,255,255,.2);border-radius:14px;color:#c7d3f4;font-size:10px;line-height:1.6;text-align:center}
 .map-info ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:7px}.map-info li{padding-top:7px;border-top:1px solid #e8ebf0}.map-info li b,.map-info li span{display:block}.map-info li b{font-size:10px}.map-info li span{font-size:9px;color:#687790;margin-top:2px}
+
+
+/* === V19: mapa, mandato aberto e indicadores === */
+#officeCounterCard[hidden]{display:none!important}
+.map-layout{grid-template-columns:1fr!important}
+.map-solutions-feed{margin-top:18px;padding:22px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(255,255,255,.08)}
+.map-solutions-head{display:grid;grid-template-columns:minmax(220px,.7fr) 1fr;gap:10px 28px;align-items:end;margin-bottom:16px}.map-solutions-head .section-kicker{grid-column:1/-1}.map-solutions-head h3{margin:0}.map-solutions-head p{margin:0;color:rgba(255,255,255,.75)}
+.map-solutions-feed .map-action-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.map-solutions-feed .map-action-item{min-width:0}.map-solutions-feed .map-empty{grid-column:1/-1}
+.transparency-cards .chamber-info-card{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:14px;padding:17px;border:1px solid var(--line);border-radius:18px;background:#fff;color:var(--ink);transition:.25s}
+.transparency-cards .chamber-info-card:hover{transform:translateY(-3px);border-color:rgba(14,50,255,.28);box-shadow:0 12px 30px rgba(14,50,255,.08)}
+.chamber-info-card>i:first-child{color:var(--blue)}.chamber-info-card>i:last-child{width:17px;color:var(--muted)}.chamber-info-card span{display:flex;flex-direction:column;gap:4px}.chamber-info-card strong{font-size:14px}.chamber-info-card strong b{font-size:22px;color:var(--blue);margin-right:4px}.chamber-info-card small{color:var(--muted);line-height:1.45}
+@media(max-width:760px){.map-solutions-head{grid-template-columns:1fr}.map-solutions-feed .map-action-list{grid-template-columns:1fr}.map-solutions-feed{padding:17px}}

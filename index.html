@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
   <script src="js/content.js" defer></script>
-  <script src="js/app.js?v=18-solutions" defer></script>
-  <script src="js/instagram.js" defer></script>
+  <script src="js/app.js?v=19-mandato" defer></script>
+  <script src="js/instagram.js?v=19-profile" defer></script>
 </head>
 <body>
 <header class="header">
@@ -57,7 +57,7 @@
 
 <section class="intro-strip">
   <div class="container intro-strip-grid">
-    <span>Mandato 2025–2028</span><span>Saúde</span><span>Causa Animal</span><span>Infraestrutura</span><span>Transparência</span><span>Participação Popular</span>
+    <span>Mandato 2025–2028</span><span>Saúde</span><span>Causa Animal</span><span>Segurança Pública</span><span>Transparência</span><span>Participação Popular</span>
   </div>
 </section>
 
@@ -84,7 +84,7 @@
     <div class="numbers-grid legislative-numbers-grid">
       <article class="official-counter"><strong id="counterProjects" data-counter="0">0</strong><span>Projetos de Lei apresentados</span><p>Proposições de autoria de Elton Carvalho registradas oficialmente pela Câmara.</p></article>
       <article class="official-counter"><strong id="counterRequirements" data-counter="0">0</strong><span>Requerimentos apresentados</span><p>Requerimentos vinculados ao perfil oficial do vereador na Câmara Municipal.</p></article>
-      <article class="official-counter"><strong id="counterOffices" data-counter="0">0</strong><span>Ofícios encaminhados</span><p id="officesCounterNote">Contagem vinculada à fonte oficial configurada no painel.</p></article>
+      <article class="official-counter" id="officeCounterCard" hidden aria-hidden="true"><strong id="counterOffices" data-counter="0">0</strong><span>Ofícios encaminhados</span><p id="officesCounterNote">Contagem vinculada à fonte oficial configurada no painel.</p></article>
       <article><strong id="counterResources" data-content-key="numbers.resources" data-static-counter="4" data-counter-prefix="+ R$ " data-counter-suffix=" mi">0</strong><span>Recursos destinados por deputados</span><p>Investimentos articulados para fortalecer serviços e projetos em São Carlos.</p></article>
       <article><strong id="counterProtocols" data-content-key="numbers.protocols" data-static-counter="600" data-counter-prefix="+ ">0</strong><span>Protocolos abertos</span><p>Demandas de moradores recebidas e encaminhadas pelo gabinete.</p></article>
     </div>
@@ -98,7 +98,7 @@
     <div class="areas-grid">
       <article class="area-card"><span class="area-icon"><i data-lucide="stethoscope"></i></span><h3 data-content-key="areas.health.title">Saúde</h3><p data-content-key="areas.health.text">Fiscalização das unidades, melhoria no atendimento e busca de recursos para ampliar a estrutura do SUS.</p></article>
       <article class="area-card"><span class="area-icon"><i data-lucide="paw-print"></i></span><h3 data-content-key="areas.animal.title">Causa Animal</h3><p data-content-key="areas.animal.text">Proteção, combate aos maus-tratos, políticas de adoção, atendimento veterinário e fortalecimento do bem-estar animal.</p></article>
-      <article class="area-card"><span class="area-icon"><i data-lucide="building-2"></i></span><h3 data-content-key="areas.infra.title">Infraestrutura</h3><p data-content-key="areas.infra.text">Manutenção urbana, vias, iluminação, descarte irregular, mato alto e melhorias nos bairros.</p></article>
+      <article class="area-card"><span class="area-icon"><i data-lucide="shield-check"></i></span><h3 data-content-key="areas.infra.title">Segurança Pública</h3><p data-content-key="areas.infra.text">Investimentos e fiscalização para fortalecer a segurança: câmeras de monitoramento, equipamentos para a Guarda Municipal, apoio à fiscalização e cobrança por reforço do policiamento nos bairros.</p></article>
       <article class="area-card"><span class="area-icon"><i data-lucide="heart-handshake"></i></span><h3 data-content-key="areas.social.title">Área Social</h3><p data-content-key="areas.social.text">Apoio a famílias, entidades e iniciativas que ampliam oportunidades e fortalecem a rede de proteção social.</p></article>
     </div>
   </div>
@@ -112,9 +112,10 @@
         <div class="map-topbar"><span><i data-lucide="map-pin"></i> São Carlos — SP</span><a href="https://www.google.com/maps/search/?api=1&query=S%C3%A3o+Carlos%2C+SP" target="_blank" rel="noopener">Abrir no Google Maps <i data-lucide="external-link"></i></a></div>
         <div class="map-frame"><div id="googleMap" class="google-map-canvas" aria-label="Mapa das ações do mandato em São Carlos"></div><div id="mapFallback" class="map-fallback" hidden><iframe src="https://www.google.com/maps?q=S%C3%A3o%20Carlos%2C%20SP&z=12&output=embed" title="Mapa de São Carlos no Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div></div>
       </div>
-      <aside class="map-panel">
-        <span class="section-kicker">Demandas solucionadas</span><h3 id="mapPanelTitle">Resultados do mandato.</h3><p id="mapPanelText">As soluções registradas no painel administrativo aparecerão aqui automaticamente.</p><div class="map-action-list" id="mapActionList" aria-live="polite"><div class="map-empty">Carregando soluções…</div></div><a class="button button-yellow full" href="#gabinete"><i data-lucide="message-circle"></i> Enviar uma demanda</a>
-      </aside>
+      <div class="map-solutions-feed" aria-live="polite">
+        <div class="map-solutions-head"><span class="section-kicker">Demandas solucionadas</span><h3 id="mapPanelTitle">Resultados do mandato.</h3><p id="mapPanelText">As soluções do mandato aparecerão aqui conforme forem concluídas.</p></div>
+        <div class="map-action-list" id="mapActionList"><div class="map-empty">Carregando soluções…</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -122,11 +123,11 @@
 <section class="section transparency-section">
   <div class="container transparency-grid">
     <div><span class="section-kicker" data-content-key="transparency.kicker">Mandato aberto</span><h2 data-content-key="transparency.title">ACOMPANHE O TRABALHO.</h2><p class="lead" data-content-key="transparency.text">Uma área pensada para organizar projetos, requerimentos, recursos e ações do gabinete de maneira simples para o cidadão.</p></div>
-    <div class="transparency-cards">
-      <article><i data-lucide="file-text"></i><span><strong>Projetos de Lei</strong><small>Propostas apresentadas e aprovadas.</small></span><i data-lucide="chevron-right"></i></article>
-      <article><i data-lucide="clipboard-list"></i><span><strong>Ofícios e requerimentos</strong><small>Solicitações e cobranças enviadas.</small></span><i data-lucide="chevron-right"></i></article>
-      <article><i data-lucide="landmark"></i><span><strong>Recursos conquistados</strong><small>Investimentos destinados a São Carlos.</small></span><i data-lucide="chevron-right"></i></article>
-      <article><i data-lucide="map-pinned"></i><span><strong>Ações por bairro</strong><small>Veja onde o mandato esteve presente.</small></span><i data-lucide="chevron-right"></i></article>
+    <div class="transparency-cards chamber-cards">
+      <a class="chamber-info-card" href="https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=documento&tipo=15" target="_blank" rel="noopener"><i data-lucide="file-text"></i><span><strong><b id="openProjects" data-chamber-counter="projects">0</b> Projetos de Lei</strong><small>Consulte as proposições no perfil oficial da Câmara.</small></span><i data-lucide="arrow-up-right"></i></a>
+      <a class="chamber-info-card" href="https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=documento&tipo=30" target="_blank" rel="noopener"><i data-lucide="clipboard-list"></i><span><strong><b id="openRequirements" data-chamber-counter="requirements">0</b> Requerimentos</strong><small>Veja requerimentos e cobranças registrados oficialmente.</small></span><i data-lucide="arrow-up-right"></i></a>
+      <a class="chamber-info-card" href="https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=documento&tipo=27" target="_blank" rel="noopener"><i data-lucide="message-square-text"></i><span><strong>Moções</strong><small>Acesse as moções publicadas pelo vereador na Câmara.</small></span><i data-lucide="arrow-up-right"></i></a>
+      <a class="chamber-info-card" href="https://camarasaocarlos.sp.gov.br/vereador/?id=176&p=detalhe" target="_blank" rel="noopener"><i data-lucide="landmark"></i><span><strong>Perfil oficial</strong><small>Biografia, contato, legislação e atuação parlamentar.</small></span><i data-lucide="arrow-up-right"></i></a>
     </div>
   </div>
 </section>
@@ -169,7 +170,7 @@
 
       <div class="news-card instagram-feed instagram-feed-compact" id="instagramFeed" aria-label="Últimos posts do Instagram">
         <div class="instagram-profile-head">
-          <img class="instagram-profile-photo" src="https://eltoncarvalho.netlify.app/assets/animal.jpg" alt="Foto de perfil de Elton Carvalho">
+          <img class="instagram-profile-photo" id="instagramProfilePhoto" src="assets/brand/logo-vereador-azul.png" alt="Foto de perfil de Elton Carvalho" loading="lazy">
           <div class="instagram-profile-copy">
             <span class="instagram-label"><i data-lucide="instagram"></i> Instagram</span>
             <h3 data-content-key="news.instagram.title">Elton Carvalho</h3>
@@ -204,6 +205,6 @@
 
 <footer><div class="container footer-grid"><div><img class="footer-logo" src="assets/brand/logo-white.png" alt="Elton Carvalho Vereador"><p data-content-key="footer.text">Mandato presente, transparente e conectado com São Carlos.</p></div><div><strong>Navegação</strong><a href="#sobre">Sobre</a><a href="#atuacao">Atuação</a><a href="#mapa">Mapa</a><a href="#gabinete">Gabinete Digital</a></div><div><strong>Contato</strong><a href="https://wa.me/5516992934352" target="_blank" rel="noopener">(16) 99293-4352</a><a href="https://instagram.com/eltoncarvalho10192" target="_blank" rel="noopener">@eltoncarvalho10192</a><span>São Carlos • SP</span><span class="candidate-cnpj">CNPJ CANDIDATO: 68.462.006/0001-14<br>Elton Carvalho Porto</span></div></div></footer>
 <div class="footer-pattern" aria-hidden="true"></div>
-<script src="js/maps-config.js"></script><script src="js/map-actions.js?v=18-solutions"></script>
+<script src="js/maps-config.js"></script><script src="js/map-actions.js?v=19-solutions"></script>
 </body>
 </html>

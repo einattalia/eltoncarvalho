@@ -7,7 +7,9 @@
       const content = payload.content || {};
       document.querySelectorAll('[data-content-key]').forEach((el) => {
         const key = el.dataset.contentKey;
-        const item = content[key];
+        let item = content[key];
+        if(key==='areas.infra.title' && item?.value==='Infraestrutura') item={...item,value:'Segurança Pública'};
+        if(key==='areas.infra.text' && /Manutenção urbana|vias, iluminação/i.test(item?.value||'')) item={...item,value:'Investimentos e fiscalização para fortalecer a segurança: câmeras de monitoramento, equipamentos para a Guarda Municipal, apoio à fiscalização e cobrança por reforço do policiamento nos bairros.'};
         if (!item || item.value == null || item.value === '') return;
         const type = el.dataset.contentType || item.type || 'text';
         if (type === 'image' && el.tagName === 'IMG') el.src = item.value;
