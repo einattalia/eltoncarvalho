@@ -8,7 +8,8 @@ module.exports = async function handler(req, res) {
       supabaseUrl: env('SUPABASE_URL'),
       supabasePublishableKey: env('SUPABASE_PUBLISHABLE_KEY'),
       demandBucket: process.env.SUPABASE_DEMAND_BUCKET || 'demand-attachments',
-      siteMediaBucket: process.env.SUPABASE_SITE_MEDIA_BUCKET || 'site-media'
+      siteMediaBucket: process.env.SUPABASE_SITE_MEDIA_BUCKET || 'site-media',
+      amendmentBucket: process.env.SUPABASE_AMENDMENT_BUCKET || 'amendment-documents'
     });
   } catch (error) {
     return json(res, 500, { error: error.message });
