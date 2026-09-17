@@ -1,7 +1,12 @@
 const { cors, json, db, requireAdmin, env, secretKey } = require('./_lib');
 function amendmentPayload(b, userId) {
-  const allowed=['Em articulação','Indicada','Confirmada','Aguardando liberação','Recurso recebido','Executada','Cancelada/Arquivada'];
-  return { title:String(b.title||'').trim().slice(0,200), year:Number(b.year)||new Date().getFullYear(), status:allowed.includes(b.status)?b.status:'Em articulação', area:String(b.area||'').slice(0,100), sphere:String(b.sphere||'').slice(0,50), parliamentarian:String(b.parliamentarian||'').slice(0,180), party:String(b.party||'').slice(0,50), beneficiary:String(b.beneficiary||'').slice(0,220), municipality:String(b.municipality||'São Carlos/SP').slice(0,150), purpose:String(b.purpose||'').slice(0,1000), amendment_number:String(b.amendment_number||'').slice(0,120), requested_value:Number(b.requested_value)||0, approved_value:Number(b.approved_value)||0, received_value:Number(b.received_value)||0, indication_date:b.indication_date||null, expected_payment_date:b.expected_payment_date||null, received_date:b.received_date||null, internal_owner:String(b.internal_owner||'').slice(0,180), articulation_origin:String(b.articulation_origin||'').slice(0,220), notes:String(b.notes||'').slice(0,4000), is_public:!!b.is_public, updated_at:new Date().toISOString(), updated_by:userId, created_by:userId };
+  const allowed=['Em andamento','Protocolada','Executada','Alterada'];
+  const amendmentType=['Saúde','Livre'].includes(b.amendment_type)?b.amendment_type:'Livre';
+  return { title:String(b.title||'').trim().slice(0,200), year:Number(b.year)||new Date().getFullYear(), status:allowed.includes(b.status)?b.status:'Em andamento', area:String(b.area||'').slice(0,100), sphere:String(b.sphere||'Municipal').slice(0,50), parliamentarian:'Elton Carvalho Porto', party:String(b.party||'').slice(0,50), beneficiary:String(b.beneficiary||'').slice(0,220), municipality:String(b.municipality||'São Carlos/SP').slice(0,150), purpose:String(b.purpose||'').slice(0,1000), protocol_number:String(b.protocol_number||'').slice(0,120), amendment_type:amendmentType, allocated_value:Math.max(0,Number(b.allocated_value)||0), indication_date:b.indication_date||null, expected_payment_date:b.expected_payment_date||null, received_date:b.received_date||null, internal_owner:String(b.internal_owner||'').slice(0,180), articulation_origin:String(b.articulation_origin||'').slice(0,220), notes:String(b.notes||'').slice(0,4000), labels:Array.isArray(b.labels)?b.labels.map(x=>String(x).slice(0,40)).slice(0,8):[], is_public:!!b.is_public, updated_at:new Date().toISOString(), updated_by:userId, created_by:userId };
+}
+function budgetPayload(b,userId){
+  const initial=Math.max(0,Number(b.initial_value)||0), pct=Math.min(100,Math.max(0,Number(b.health_percentage)||0));
+  return {year:Number(b.year)||new Date().getFullYear(),initial_value:initial,health_percentage:pct,updated_at:new Date().toISOString(),updated_by:userId};
 }
 
 module.exports = async function handler(req, res) {
@@ -19,7 +24,13 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET' && action === 'amendments') {
       const rows = await db('parliamentary_amendments?select=*&order=created_at.desc');
       const docs = await db('amendment_documents?select=*&order=created_at.desc');
-      return json(res, 200, { amendments: rows || [], documents: docs || [] });
+      const budgets = await db('amendment_budgets?select=*&order=year.desc');
+      return json(res, 200, { amendments: rows || [], documents: docs || [], budgets: budgets || [] });
+    }
+    if (req.method === 'PUT' && action === 'amendment-budget') {
+      const payload=budgetPayload(req.body||{},access.user.id);
+      const rows=await db('amendment_budgets',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(payload)});
+      return json(res,200,{budget:rows?.[0]||null});
     }
     if (req.method === 'GET' && action === 'amendment-document') {
       const path = String(req.query?.path || '');
